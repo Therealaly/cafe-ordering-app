@@ -4,6 +4,8 @@ import Home from './pages/Home'
 import Orders from './pages/Orders'
 import Profile from './pages/Profile'
 import BottomNav from './components/BottomNav'
+import UpperBar from './components/UpperBar'
+import Cart from './pages/Cart'
 import './App.css'
 
 function App() {
@@ -12,10 +14,12 @@ function App() {
 
   return (
     <div className='pb-16'>
+      <UpperBar/>
       <Routes>
         <Route path='/' element={<Home/>} />
         <Route path='/pesanan' element={<Orders/>} />
         <Route path='/profil' element={<Profile/>} />
+        <Route path='/keranjang' element={<Cart/>} />
       </Routes>
       {!hideNav && <BottomNav/>}
     </div>
