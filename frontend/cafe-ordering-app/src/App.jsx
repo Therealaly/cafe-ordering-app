@@ -13,7 +13,7 @@ function App() {
   const hideNav = location.pathname.startsWith('./kasir');
 
   return (
-    <div className='pb-16'>
+    <div className='w-full h-full'>
       <UpperBar/>
       <Routes>
         <Route path='/' element={<Home/>} />
