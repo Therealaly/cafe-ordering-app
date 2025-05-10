@@ -26,7 +26,7 @@ const MenuList = () => {
               <p className="text-sm text-black font-semibold">{item.alt}</p>
             </div>
             <button
-              className="text-sm bg-green-800 text-white px-3 py-1 rounded-lg border-2 hover:bg-green-950 border-green-800 transition"
+              className="text-sm bg-green-900 text-white px-3 py-1 rounded-lg border-2 hover:bg-green-950 border-green-800 transition"
               onClick={() => console.log(`Tambah ${item.alt}`)}
             >
               Tambah
