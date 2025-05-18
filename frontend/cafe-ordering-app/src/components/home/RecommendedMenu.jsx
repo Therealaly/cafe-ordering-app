@@ -1,10 +1,10 @@
-const RecommendedMenu = () => {
+const RecommendedMenu = ({ onSelect }) => {
   const recommended = [
-    { id: 1, image: "../src/assets/dev/iced-coffee-latte.jpg", alt: "Cafe Latte" },
-    { id: 2, image: "../src/assets/dev/iced-coffee-latte.jpg", alt: "Cappuccino" },
-    { id: 3, image: "../src/assets/dev/matcha-latte.jpg", alt: "Matcha" },
-    { id: 4, image: "../src/assets/dev/espresso.jpg", alt: "Espresso" },
-    { id: 5, image: "../src/assets/dev/iced-coffee-latte.jpg", alt: "Affogato" },
+    { id: 1, image: "../src/assets/dev/iced-coffee-latte.jpg", alt: "Cafe Latte", price: 25000 },
+    { id: 2, image: "../src/assets/dev/iced-coffee-latte.jpg", alt: "Cappuccino", price: 25000 },
+    { id: 3, image: "../src/assets/dev/matcha-latte.jpg", alt: "Matcha", price: 30000 },
+    { id: 4, image: "../src/assets/dev/espresso.jpg", alt: "Espresso", price: 22000 },
+    { id: 5, image: "../src/assets/dev/iced-coffee-latte.jpg", alt: "Affogato", price: 27000 },
   ];
 
   return (
@@ -22,7 +22,10 @@ const RecommendedMenu = () => {
       <div className="overflow-x-auto whitespace-nowrap scroll-smooth px-5 pb-5 element">
         <div className="flex space-x-5 w-max">
           {recommended.map(item => (
-            <div key={item.id} className="flex flex-col items-center">
+            <div 
+              key={item.id} 
+              onClick={() => onSelect(item)}
+              className="flex flex-col items-center">
               <img
                 src={item.image}
                 alt={item.alt}

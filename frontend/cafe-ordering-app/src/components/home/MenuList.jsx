@@ -1,11 +1,11 @@
-const MenuList = () => {
+const MenuList = ({ onSelect }) => {
   const menu = [
-    { id: 1, image: "../src/assets/dev/iced-coffee-latte.jpg", alt: "Cafe Latte", tags: "drink" },
-    { id: 2, image: "../src/assets/dev/chocolate.jpg", alt: "Chocolate", tags: "drink" },
-    { id: 3, image: "../src/assets/dev/matcha-latte.jpg", alt: "Matcha", tags: "drink" },
-    { id: 4, image: "../src/assets/dev/espresso.jpg", alt: "Espresso", tags: "drink" },
-    { id: 5, image: "../src/assets/dev/croissant.jpg", alt: "Croissant", tags: "food" },
-    { id: 6, image: "../src/assets/dev/fried-rice.jpg", alt: "Fried Rice", tags: "food" },
+    { id: 1, image: "../src/assets/dev/iced-coffee-latte.jpg", alt: "Cafe Latte", price: 25000, tags: "drink" },
+    { id: 2, image: "../src/assets/dev/chocolate.jpg", alt: "Chocolate", price: 24000, tags: "drink" },
+    { id: 3, image: "../src/assets/dev/matcha-latte.jpg", alt: "Matcha", price: 30000, tags: "drink" },
+    { id: 4, image: "../src/assets/dev/espresso.jpg", alt: "Espresso", price: 22000, tags: "drink" },
+    { id: 5, image: "../src/assets/dev/croissant.jpg", alt: "Croissant", price: 25000, tags: "food" },
+    { id: 6, image: "../src/assets/dev/fried-rice.jpg", alt: "Fried Rice", price: 35000, tags: "food" },
   ];
 
   const foodMenu = menu.filter(item => item.tags === "food");
@@ -27,7 +27,7 @@ const MenuList = () => {
             </div>
             <button
               className="text-sm bg-green-900 text-white px-3 py-1 rounded-lg border-2 hover:bg-green-950 border-green-800 transition"
-              onClick={() => console.log(`Tambah ${item.alt}`)}
+              onClick={() => onSelect(item)}
             >
               Tambah
             </button>
