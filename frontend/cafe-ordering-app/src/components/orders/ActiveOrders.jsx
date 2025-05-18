@@ -3,8 +3,8 @@ import { Link } from "react-router-dom"; // Pastikan kamu menggunakan react-rout
 
 const ActiveOrders = () => {
   const order = [
-    { id: 34, time: "12:10", price: "45.000", desc: "1 Cafe latte, 1 Croissant", table: "12", status: "Menunggu Konfirmasi" },
-    // { id: 20, time: "12:00", price: "25.000", desc: "1 Chocolate", table: "Takeaway", status: "disiapkan" },
+    // // { id: 34, time: "12:10", price: "45.000", desc: "1 Cafe latte, 1 Croissant", table: "12", status: "Menunggu Konfirmasi" },
+    // // { id: 20, time: "12:00", price: "25.000", desc: "1 Chocolate", table: "Takeaway", status: "disiapkan" },
     // { id: 17, time: "11:45", price: "50.000", desc: "2 Matcha Latte", table: "12", status: "Selesai" }
   ];
 

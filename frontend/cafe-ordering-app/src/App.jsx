@@ -20,6 +20,11 @@ function App() {
         <Route path='/pesanan' element={<Orders/>} />
         <Route path='/profil' element={<Profile/>} />
         <Route path='/keranjang' element={<Cart/>} />
+        {/* <Route path="/ganti-password" element={<GantiPassword />} />
+        <Route path="/ubah-nama" element={<UbahNama />} />
+        <Route path="/kontak" element={<Kontak />} />
+        <Route path="/logout" element={<Logout />} /> */}
+
       </Routes>
       {!hideNav && <BottomNav/>}
     </div>
