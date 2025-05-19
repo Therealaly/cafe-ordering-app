@@ -1,12 +1,14 @@
 import { ClockFading, CookingPot, CircleCheck } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom"; // Pastikan kamu menggunakan react-router
 
 const ActiveOrders = () => {
-  const order = [
-    // // { id: 34, time: "12:10", price: "45.000", desc: "1 Cafe latte, 1 Croissant", table: "12", status: "Menunggu Konfirmasi" },
-    // // { id: 20, time: "12:00", price: "25.000", desc: "1 Chocolate", table: "Takeaway", status: "disiapkan" },
-    // { id: 17, time: "11:45", price: "50.000", desc: "2 Matcha Latte", table: "12", status: "Selesai" }
-  ];
+  const [orders, setOrders] = useState([])
+
+  useEffect(() => {
+    const savedOrders = JSON.parse(localStorage.getItem("myOrders")) || [];
+    setOrders(savedOrders);
+  }, [])
 
   const statusMap = {
     "Menunggu Konfirmasi": {
@@ -30,7 +32,7 @@ const ActiveOrders = () => {
           Pesanan Saya
         </h1>
 
-        {order.length === 0 ? (
+        {orders.length === 0 ? (
           <div className="text-center p-4  border border-gray-200 rounded-xl shadow-sm bg-white">
             <p className="text-gray-500 font-medium mb-4">
               Belum ada pesanan aktif, yuk pesan dulu!
@@ -43,7 +45,7 @@ const ActiveOrders = () => {
             </Link>
           </div>
         ) : (
-          order.map((item) => {
+          orders.map((item) => {
             const status = statusMap[item.status] || {
               icon: <ClockFading className="text-gray-400" />,
               color: "text-gray-400",

@@ -18,12 +18,33 @@ const Cart = () => {
     cart.reduce((total, item) => total + getItemTotal(item), 0);
 
   const handleBayar = () => {
-    console.log("Dikirim ke kasir:", cart);
-    // Simpan data ini ke database (nanti)
-    // Navigasi ke halaman kasir (jika sudah dibuat)
-    alert("Pesanan dikirim ke kasir!");
+    if (cart.length === 0) return;
+
+    const now = new Date();
+    const time = now.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+
+    const totalPrice = getGrandTotal();
+    const order = {
+      id: Date.now(),
+      time,
+      price: totalPrice,
+      desc: cart.map(item => `${item.quantity} ${item.alt}`).join(","),
+      table: "12", // diganti dengan qr nanti
+      status: "Menunggu Konfirmasi"
+    };
+
+    // menyimpan ke localstorage myorders
+    const myOrders = JSON.parse(localStorage.getItem("myOrders")) || [];
+    localStorage.setItem("myOrders", JSON.stringify([order, ...myOrders]));
+
+    const pendingOrders = JSON.parse(localStorage.getItem("pendingOrders")) || [];
+    localStorage.setItem("pendingOrders", JSON.stringify([order, ...pendingOrders]));
+
+    // Kosongkan keranjang
     localStorage.removeItem("cart");
-    setCart([]);
+
+    // Redirect ke halaman pesanan (optional pakai navigate atau link)
+    window.location.href = "/pesanan"; // jika pakai routing
   };
 
   const handleRemoveItem = (id) => {
