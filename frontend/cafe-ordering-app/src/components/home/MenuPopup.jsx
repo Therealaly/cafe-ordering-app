@@ -1,7 +1,20 @@
 import { useState } from "react";
 
+// mengakses props (fungsi) dari home yaitu menu, onclose, dan onAddToCart
 const MenuPopup = ({ menu, onClose, onAddToCart }) => {
   const [quantity, setQuantity] = useState(1);
+
+  // fungsi ini memanggil onAddToCart dari home
+  const handleAdd = () => {
+    if (quantity < 1) return;
+
+    const itemToAdd = {
+      ...menu,
+      quantity,
+    };
+
+    onAddToCart(itemToAdd)
+  };
 
   return (
     <div className="fixed inset-0 bg-black backdrop-opacity-50 flex items-center justify-center z-50">
@@ -24,10 +37,7 @@ const MenuPopup = ({ menu, onClose, onAddToCart }) => {
 
         <button
           className="w-full py-2 bg-green-700 text-white rounded-xl"
-          onClick={() => {
-            onAddToCart({ ...menu, quantity });
-            onClose();
-          }}
+          onClick={handleAdd}
         >
           Tambah ke Keranjang
         </button>
