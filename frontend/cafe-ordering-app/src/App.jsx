@@ -1,25 +1,45 @@
 // import { useState } from 'react'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import Home from './pages/Home'
 import Orders from './pages/Orders'
 import Profile from './pages/Profile'
 import BottomNav from './components/BottomNav'
 import UpperBar from './components/UpperBar'
 import Cart from './pages/Cart'
+import LoginKasir from './pages/LoginKasir'
+import DashboardKasir from './pages/DashboardKasir'
 import './App.css'
+import { useEffect } from 'react'
 
 function App() {
+
+  useEffect(() => {
+    let visitorId = localStorage.getItem("visitorId");
+    if (!visitorId) {
+      visitorId = crypto.randomUUID();
+      localStorage.setItem("visitorId", visitorId);
+    }
+  }, []);
+
   const location = useLocation();
-  const hideNav = location.pathname.startsWith('./kasir');
+  const hideNav = location.pathname.startsWith('/kasir');
+
+  const isKasirLoggedIn = () => {
+    const auth = JSON.parse(localStorage.getItem("kasirAuth"));
+    return auth.role("kasir")
+  }
 
   return (
     <div className='w-full h-full'>
-      <UpperBar/>
+      {!hideNav && <UpperBar/>}
       <Routes>
         <Route path='/' element={<Home/>} />
         <Route path='/pesanan' element={<Orders/>} />
         <Route path='/profil' element={<Profile/>} />
         <Route path='/keranjang' element={<Cart/>} />
+        <Route path='/kasir/login' element={<LoginKasir/>} />
+        <Route path='/kasir/dashboard' element={
+          isKasirLoggedIn ? <DashboardKasir/> : <Navigate to={"/kasir/login"}/> } />
         {/* <Route path="/ganti-password" element={<GantiPassword />} />
         <Route path="/ubah-nama" element={<UbahNama />} />
         <Route path="/kontak" element={<Kontak />} />

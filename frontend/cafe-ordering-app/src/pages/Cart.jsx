@@ -3,6 +3,7 @@ import { Trash2 } from 'lucide-react';
 
 const Cart = () => {
   const [cart, setCart] = useState([]);
+  const visitorId = localStorage.getItem("visitorId")
 
   // Ambil data cart dari localStorage saat pertama render
   useEffect(() => {
@@ -17,17 +18,18 @@ const Cart = () => {
   const getGrandTotal = () =>
     cart.reduce((total, item) => total + getItemTotal(item), 0);
 
+  // logika pembayaran
   const handleBayar = () => {
     if (cart.length === 0) return;
 
     const now = new Date();
     const time = now.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
 
-    const totalPrice = getGrandTotal();
     const order = {
       id: Date.now(),
+      visitorId: visitorId,
       time,
-      price: totalPrice,
+      price: parseInt(getGrandTotal(), 10),
       desc: cart.map(item => `${item.quantity} ${item.alt}`).join(","),
       table: "12", // diganti dengan qr nanti
       status: "Menunggu Konfirmasi"
@@ -37,6 +39,7 @@ const Cart = () => {
     const myOrders = JSON.parse(localStorage.getItem("myOrders")) || [];
     localStorage.setItem("myOrders", JSON.stringify([order, ...myOrders]));
 
+    // mengambil pending orders dan tambah order baru ke pendingOrders
     const pendingOrders = JSON.parse(localStorage.getItem("pendingOrders")) || [];
     localStorage.setItem("pendingOrders", JSON.stringify([order, ...pendingOrders]));
 

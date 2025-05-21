@@ -6,9 +6,13 @@ const ActiveOrders = () => {
   const [orders, setOrders] = useState([])
 
   useEffect(() => {
-    const savedOrders = JSON.parse(localStorage.getItem("myOrders")) || [];
-    setOrders(savedOrders);
-  }, [])
+  const allOrders = JSON.parse(localStorage.getItem("pendingOrders")) || [];
+  const visitorId = localStorage.getItem("visitorId");
+
+  const myOrders = allOrders.filter(order => order.visitorId === visitorId);
+  setOrders(myOrders);
+}, []);
+
 
   const statusMap = {
     "Menunggu Konfirmasi": {
