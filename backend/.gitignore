@@ -1,0 +1,24 @@
+# Ignore environment files
+.env
+.env.*  # Untuk file seperti .env.development, .env.production
+
+# Ignore Node modules
+node_modules/
+**/node_modules/
+
+# Ignore build output (misal Vite/React)
+dist/
+build/
+
+# Logs
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# VSCode
+.vscode/
+
+# Ignore other system or editor specific files
+*.swp
