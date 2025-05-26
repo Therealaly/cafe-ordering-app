@@ -1,33 +1,39 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
 const MenuList = ({ onSelect }) => {
-  const menu = [
-    { id: 1, image: "../src/assets/dev/iced-coffee-latte.jpg", alt: "Cafe Latte", price: 25000, tags: "drink" },
-    { id: 2, image: "../src/assets/dev/chocolate.jpg", alt: "Chocolate", price: 24000, tags: "drink" },
-    { id: 3, image: "../src/assets/dev/matcha-latte.jpg", alt: "Matcha", price: 30000, tags: "drink" },
-    { id: 4, image: "../src/assets/dev/espresso.jpg", alt: "Espresso", price: 22000, tags: "drink" },
-    { id: 5, image: "../src/assets/dev/croissant.jpg", alt: "Croissant", price: 25000, tags: "food" },
-    { id: 6, image: "../src/assets/dev/fried-rice.jpg", alt: "Fried Rice", price: 35000, tags: "food" },
-  ];
+  const [menus, setMenu] = useState([]);
 
-  const foodMenu = menu.filter(item => item.tags === "food");
-  const drinkMenu = menu.filter(item => item.tags === "drink");
+  useEffect(() => {
+    axios.get("http://localhost:5000/api/menu")
+      .then(response => {
+        setMenu(response.data);
+      })
+      .catch(error => {
+        console.error("Error fetching menu:", error);
+      });    
+  }, []);
 
-  const renderMenuSection = (title, items) => (
+  const foodMenu = menus.filter(menus => menus.category === "Makanan");
+  const drinkMenu = menus.filter(menus => menus.category === "Minuman");
+
+  const renderMenuSection = (title, menus) => (
     <div className="flex flex-col space-y-3">
       <h2 className="text-lg font-normal text-black">{title}</h2>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        {items.map(item => (
-          <div key={item.id} className="flex flex-row items-center justify-between gap-4 p-2 border border-gray-200 rounded-xl shadow-sm bg-white">
+        {menus.map(menu => (
+          <div key={menu._id} className="flex flex-row items-center justify-between gap-4 p-2 border border-gray-200 rounded-xl shadow-sm bg-white">
             <div className="flex flex-row items-center gap-4">
               <img
-                src={item.image}
-                alt={item.alt}
+                src={menu.image}
+                alt={menu.name}
                 className="rounded-2xl h-24 w-20 object-cover"
               />
-              <p className="text-sm text-black font-semibold">{item.alt}</p>
+              <p className="text-sm text-black font-semibold">{menu.name}</p>
             </div>
             <button
               className="text-sm bg-green-900 text-white px-3 py-1 rounded-lg border-2 hover:bg-green-950 border-green-800 transition"
-              onClick={() => onSelect(item)}
+              onClick={() => onSelect(menu)}
             >
               Tambah
             </button>

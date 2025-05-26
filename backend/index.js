@@ -10,8 +10,12 @@ app.use(express.json());
 // route API
 const authRoutes = require("./routes/authRoutes")
 const userRoutes = require("./routes/userRoutes")
+const menuRoutes = require("./routes/menuRoutes")
+const promoRoutes = require("./routes/promoRoutes");
+app.use("/api/promo", promoRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/user", userRoutes)
+app.use("/api/user", userRoutes);
+app.use("/api/menu", menuRoutes);
 
 // Coba koneksi MongoDB
 mongoose.connect(process.env.MONGO_URI)
