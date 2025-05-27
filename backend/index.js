@@ -12,6 +12,8 @@ const authRoutes = require("./routes/authRoutes")
 const userRoutes = require("./routes/userRoutes")
 const menuRoutes = require("./routes/menuRoutes")
 const promoRoutes = require("./routes/promoRoutes");
+const orderRoutes = require("./routes/orderRoutes");
+app.use("/api/order", orderRoutes);
 app.use("/api/promo", promoRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);

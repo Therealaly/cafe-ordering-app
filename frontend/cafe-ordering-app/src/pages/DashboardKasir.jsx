@@ -1,7 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ClockFading, CookingPot, CircleCheck } from "lucide-react";
+import { isLoggedIn, isKasir } from "../utils/auth";
+import {useNavigate} from "react-router-dom";
 
 const DashboardKasir = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoggedIn() || !isKasir()) {
+      navigate("/login");
+    }
+  }, []);
+
   const [orders, setOrders] = useState(() => {
     return JSON.parse(localStorage.getItem("pendingOrders")) || []
   });

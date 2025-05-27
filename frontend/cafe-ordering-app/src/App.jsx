@@ -8,6 +8,9 @@ import UpperBar from './components/UpperBar'
 import Cart from './pages/Cart'
 import LoginKasir from './pages/LoginKasir'
 import DashboardKasir from './pages/DashboardKasir'
+import Login from './pages/Login'
+import Register from './pages/Register'
+
 import './App.css'
 import { useEffect } from 'react'
 
@@ -22,7 +25,7 @@ function App() {
   }, []);
 
   const location = useLocation();
-  const hideNav = location.pathname.startsWith('/kasir');
+  const hideNav = location.pathname.startsWith('/kasir') || location.pathname.startsWith('/login') || location.pathname.startsWith('/register');
 
   const isKasirLoggedIn = () => {
     const auth = JSON.parse(localStorage.getItem("kasirAuth"));
@@ -37,6 +40,8 @@ function App() {
         <Route path='/pesanan' element={<Orders/>} />
         <Route path='/profil' element={<Profile/>} />
         <Route path='/keranjang' element={<Cart/>} />
+        <Route path='/login' element={<Login/>} />
+        <Route path='/register' element={<Register/>} />
         <Route path='/kasir/login' element={<LoginKasir/>} />
         <Route path='/kasir/dashboard' element={
           isKasirLoggedIn ? <DashboardKasir/> : <Navigate to={"/kasir/login"}/> } />

@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { Trash2 } from 'lucide-react';
+import {isLoggedIn} from "../utils/auth";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const [cart, setCart] = useState([]);
   const visitorId = localStorage.getItem("visitorId")
+  const navigate = useNavigate();
 
   // Ambil data cart dari localStorage saat pertama render
   useEffect(() => {
@@ -12,6 +15,12 @@ const Cart = () => {
       setCart(JSON.parse(savedCart));
     }
   }, []);
+
+  useEffect(() => {
+      if (!isLoggedIn()) {
+        navigate("/login");
+      }
+    }, [navigate]);
 
   // Hitung total per item dan grand total
   const getItemTotal = (item) => item.price * item.quantity;
@@ -30,7 +39,7 @@ const Cart = () => {
       visitorId: visitorId,
       time,
       price: parseInt(getGrandTotal(), 10),
-      desc: cart.map(item => `${item.quantity} ${item.alt}`).join(","),
+      desc: cart.map(item => `${item.quantity} ${item.name}`).join(","),
       table: "12", // diganti dengan qr nanti
       status: "Menunggu Konfirmasi"
     };
@@ -68,17 +77,17 @@ const Cart = () => {
         <div className="space-y-4">
           {cart.map((item) => (
             <div
-              key={item.id}
+              key={item._id}
               className="flex justify-between items-center border p-3 rounded-xl shadow-sm bg-white"
             >
               <div className="flex gap-3 items-center">
                 <img
                   src={item.image}
-                  alt={item.alt}
+                  alt={item.name}
                   className="w-16 h-16 object-cover rounded-lg"
                 />
                 <div>
-                  <h2 className="text-black font-semibold">{item.alt}</h2>
+                  <h2 className="text-black font-semibold">{item.name}</h2>
                   <p className="text-sm text-gray-600">
                     {item.quantity} x Rp {item.price.toLocaleString()}
                   </p>
