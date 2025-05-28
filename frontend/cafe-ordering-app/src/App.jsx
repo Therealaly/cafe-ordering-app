@@ -6,7 +6,6 @@ import Profile from './pages/Profile'
 import BottomNav from './components/BottomNav'
 import UpperBar from './components/UpperBar'
 import Cart from './pages/Cart'
-import LoginKasir from './pages/LoginKasir'
 import DashboardKasir from './pages/DashboardKasir'
 import Login from './pages/Login'
 import Register from './pages/Register'
@@ -42,7 +41,6 @@ function App() {
         <Route path='/keranjang' element={<Cart/>} />
         <Route path='/login' element={<Login/>} />
         <Route path='/register' element={<Register/>} />
-        <Route path='/kasir/login' element={<LoginKasir/>} />
         <Route path='/kasir/dashboard' element={
           isKasirLoggedIn ? <DashboardKasir/> : <Navigate to={"/kasir/login"}/> } />
         {/* <Route path="/ganti-password" element={<GantiPassword />} />

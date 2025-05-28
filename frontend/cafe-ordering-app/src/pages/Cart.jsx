@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { Trash2 } from 'lucide-react';
 import {isLoggedIn} from "../utils/auth";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Cart = () => {
   const [cart, setCart] = useState([]);
-  const visitorId = localStorage.getItem("visitorId")
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
-
+  
   // Ambil data cart dari localStorage saat pertama render
   useEffect(() => {
     const savedCart = localStorage.getItem("cart");
@@ -28,40 +29,40 @@ const Cart = () => {
     cart.reduce((total, item) => total + getItemTotal(item), 0);
 
   // logika pembayaran
-  const handleBayar = () => {
+  const handleBayar = async () => {
     if (cart.length === 0) return;
 
-    const now = new Date();
-    const time = now.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) navigate("/login");
 
     const order = {
-      id: Date.now(),
-      visitorId: visitorId,
-      time,
-      price: parseInt(getGrandTotal(), 10),
-      desc: cart.map(item => `${item.quantity} ${item.name}`).join(","),
-      table: "12", // diganti dengan qr nanti
+      userId: user.id, 
+      items: cart.map(item => ({
+        menuId: item._id,
+        quantity: item.quantity,
+      })),
+      tableNumber: "12", // diganti dengan meja hasil scan qr nanti
       status: "Menunggu Konfirmasi"
     };
+    // menyimpan ke backend
+    try {
+      await axios.post("http://localhost:5000/api/order/", 
+        order,
+        { headers: { Authorization: `Bearer ${token}` } } 
+      );
 
-    // menyimpan ke localstorage myorders
-    const myOrders = JSON.parse(localStorage.getItem("myOrders")) || [];
-    localStorage.setItem("myOrders", JSON.stringify([order, ...myOrders]));
-
-    // mengambil pending orders dan tambah order baru ke pendingOrders
-    const pendingOrders = JSON.parse(localStorage.getItem("pendingOrders")) || [];
-    localStorage.setItem("pendingOrders", JSON.stringify([order, ...pendingOrders]));
-
-    // Kosongkan keranjang
     localStorage.removeItem("cart");
+    navigate("/pesanan")
 
-    // Redirect ke halaman pesanan (optional pakai navigate atau link)
-    window.location.href = "/pesanan"; // jika pakai routing
+    } catch (error) {
+      alert("Gagal membuat order. Silakan coba lagi.");
+      console.error("Error creating order:", error);
+    }
   };
 
   const handleRemoveItem = (id) => {
     // filter id item, membuat daftar baru tanpa item yang dihapus
-    const updatedCart = cart.filter(item => item.id !== id);
+    const updatedCart = cart.filter(item => item._id !== id);
     // update local storage menjadi dafar baru tanpa item tsb
     setCart(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
@@ -97,7 +98,7 @@ const Cart = () => {
                 Rp {getItemTotal(item).toLocaleString()}
               </p>
               <button
-                onClick={() => handleRemoveItem(item.id)}
+                onClick={() => handleRemoveItem(item._id)}
                 className="text-red-500 text-sm"
               > 
                 <Trash2/>

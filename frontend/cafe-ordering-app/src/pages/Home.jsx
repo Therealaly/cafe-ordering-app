@@ -19,10 +19,10 @@ const Home = () => {
 
   const handleAddToCart = (menuItemWithQty) => {
     setCart(prevCart => {
-      const exists = prevCart.find(item => item.id === menuItemWithQty.id);
+      const exists = prevCart.find(item => item._id === menuItemWithQty._id);
       if (exists) {
         return prevCart.map(item =>
-          item.id === menuItemWithQty.id ? {...item, quantity: item.quantity + menuItemWithQty.quantity } : item
+          item._id === menuItemWithQty._id ? {...item, quantity: item.quantity + menuItemWithQty.quantity } : item
         );
       } else {
         return [...prevCart, menuItemWithQty];

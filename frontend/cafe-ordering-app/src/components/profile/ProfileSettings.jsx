@@ -27,7 +27,6 @@ const ProfileSettings = () => {
     {
       label: "Log Out",
       icon: <LogOut className="text-red-500" />,
-      to: "/logout",
     },
   ];
 

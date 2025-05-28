@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { ClockFading, CookingPot, CircleCheck } from "lucide-react";
+import { ClockFading, CookingPot, CircleCheck, LogOut } from "lucide-react";
 import { isLoggedIn, isKasir } from "../utils/auth";
 import {useNavigate} from "react-router-dom";
+import axios from "axios";
 
 const DashboardKasir = () => {
   const navigate = useNavigate();
@@ -10,21 +11,42 @@ const DashboardKasir = () => {
     if (!isLoggedIn() || !isKasir()) {
       navigate("/login");
     }
-  }, []);
+  }, [navigate]);
 
-  const [orders, setOrders] = useState(() => {
-    return JSON.parse(localStorage.getItem("pendingOrders")) || []
-  });
-
-  const updateStatus = (id, nextStatus) => {
-    const updated = orders.map(order =>
-      order.id === id ? { ...order, status: nextStatus } : order
-    );
-
-    setOrders(updated);
-    localStorage.setItem("pendingOrders", JSON.stringify(updated));
+  // fetching orders from the backend
+  const [orders, setOrders] = useState([]);
+  const fetchOrders = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.get("http://localhost:5000/api/order/", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("Fetched orders:", response.data);
+      setOrders(response.data);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    }
   };
 
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  const updateStatus = async(orderId, status) => {
+    const token = localStorage.getItem("token");
+
+    try {
+      await axios.patch(`http://localhost:5000/api/order/${orderId}/status`, 
+        { status },
+        { headers: { Authorization: `Bearer ${token}` },
+      });
+
+    fetchOrders();
+    } catch (error) {
+      console.error("Error update status order:", error);
+  }};
 
   const getNextStatus = (status) => {
     if (status === "Menunggu Konfirmasi") return "disiapkan";
@@ -47,9 +69,29 @@ const DashboardKasir = () => {
     },
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login");
+  }
+
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-4">
-      <h1 className="text-2xl font-bold text-black">Dashboard Kasir</h1>
+      <div className="flex flex-row justify-between items-center">
+        <h1 className="text-2xl font-bold text-black">Dashboard Kasir</h1>
+        <button
+          className="flex flex-row items-center justify-between p-3 shadow-sm bg-red-800 hover:bg-gray-50 transition text-left rounded-md"
+          onClick={handleLogout}
+          type="button"
+        >
+          <div className="flex flex-row items-center gap-3">
+            <LogOut className="text-white" />
+            <span className="text-base font-medium text-white">
+              Log out Kasir
+            </span>
+          </div>
+        </button>
+      </div>
 
       {orders.length === 0 ? (
         <p className="text-gray-500">Belum ada pesanan masuk.</p>
@@ -64,16 +106,25 @@ const DashboardKasir = () => {
 
           return (
             <div
-              key={order.id}
-              className="p-4 rounded-xl bg-white border shadow flex justify-between items-center"
+              key={order._id}
+              className="p-4 rounded-xl bg-gray-50 border-4 shadow flex justify-between items-center"
             >
               <div>
                 <h2 className="text-lg font-bold text-black">
-                  Order #{order.id} - Meja {order.table}
+                  Order #{order._id} - Meja {order.tableNumber}
                 </h2>
-                <p className="text-sm text-black mb-2">{order.desc}</p>
+                <p className="text-sm text-black mb-2">
+                  {order.items.map((item) => (
+                    <span key={item.menuId._id} className="mr-2">
+                      {item.menuId.name} ({item.quantity})
+                    </span>
+                  ))}
+                </p>
                 <p className="text-sm font-semibold text-black">
-                  Total: Rp {order.price}
+                  Total: Rp {" "}
+                  {order.items.reduce((total, item) => 
+                    total + item.menuId.price * item.quantity, 0
+                  ).toLocaleString("id-ID")}
                 </p>
                 <p className="text-sm text-gray-500">{order.time}</p>
               </div>
@@ -87,7 +138,11 @@ const DashboardKasir = () => {
                 </div>
                 {nextStatus && (
                   <button
-                    onClick={() => updateStatus(order.id, nextStatus)}
+                    onClick={() => {
+                      if (window.confirm(`Tandai pesanan ini sebagai ${nextStatus}?`)) {
+                        updateStatus(order._id, nextStatus);
+                      }
+                    }}
                     className="px-3 py-1 bg-green-700 text-white rounded-lg text-sm"
                   >
                     Tandai: {nextStatus}

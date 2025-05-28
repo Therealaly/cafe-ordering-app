@@ -53,3 +53,15 @@ exports.updateOrderStatus = async (req, res) => {
   } 
 };
 
+exports.getUserOrders = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const orders = await Order.find({ userId }) 
+      .populate('items.menuId')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(orders);
+  } catch (err) {
+    res.status(500).json({ message: "Gagal mengambil daftar order", error: err.message });
+  }
+};
