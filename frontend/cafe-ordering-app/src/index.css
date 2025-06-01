@@ -69,3 +69,33 @@ button:focus-visible {
 .element {
   scrollbar-width: none;
 }
+
+/* Memperbaiki warna tombol dan background scanner */
+#html5qr-code-full-region {
+  background-color: white;
+  color: black;
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+/* Tombol Kamera & Upload */
+#html5qr-code-full-region button {
+  background-color: #16a34a; /* Tailwind green-600 */
+  color: white;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  margin: 0.5rem;
+  font-weight: 600;
+}
+
+/* Pastikan area scanner terlihat */
+#html5qr-code-full-region video {
+  border-radius: 1rem;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  max-width: 100%;
+}
+
+/* Teks info di bawah scanner */
+#html5qr-code-full-region span {
+  color: black;
+}

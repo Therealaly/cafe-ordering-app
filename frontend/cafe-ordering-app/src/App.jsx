@@ -9,6 +9,7 @@ import Cart from './pages/Cart'
 import DashboardKasir from './pages/DashboardKasir'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import QrScan from './pages/QrScan'
 
 import './App.css'
 import { useEffect } from 'react'
@@ -41,6 +42,9 @@ function App() {
         <Route path='/keranjang' element={<Cart/>} />
         <Route path='/login' element={<Login/>} />
         <Route path='/register' element={<Register/>} />
+        <Route path='/qr-scan' element={<QrScan/>} />
+  
+        {/* Kasir Routes */}
         <Route path='/kasir/dashboard' element={
           isKasirLoggedIn ? <DashboardKasir/> : <Navigate to={"/kasir/login"}/> } />
         {/* <Route path="/ganti-password" element={<GantiPassword />} />
