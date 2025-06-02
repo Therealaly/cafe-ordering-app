@@ -23,7 +23,7 @@ const Login = () => {
       if (user.role === "kasir") {
         navigate("/kasir/dashboard");
       } else {
-        navigate("/");
+        navigate("/qr-scan");
       }
     } catch (error) {
         alert("Login gagal. Periksa kembali email dan password.");

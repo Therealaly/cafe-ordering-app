@@ -13,6 +13,8 @@ const userRoutes = require("./routes/userRoutes")
 const menuRoutes = require("./routes/menuRoutes")
 const promoRoutes = require("./routes/promoRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+const qrCodeRoutes = require("./routes/qrCode");
+app.use("/api/qrcode", qrCodeRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/promo", promoRoutes);
 app.use("/api/auth", authRoutes);

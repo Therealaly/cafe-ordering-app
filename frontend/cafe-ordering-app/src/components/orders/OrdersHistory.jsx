@@ -62,7 +62,7 @@ const OrdersHistory = () => {
                 ).toLocaleString("id-ID")}
               </p>
               <p className="text-xs text-gray-500">
-                {order.tableNumber ? "Dine in" : "Takeaway"}
+                {order.tableNumber === "Takeaway" ? "Takeaway" : `Dine in`}
               </p>
             </div>
           </div>

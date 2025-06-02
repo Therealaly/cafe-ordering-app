@@ -7,13 +7,19 @@ import axios from "axios";
 const Cart = () => {
   const [cart, setCart] = useState([]);
   const token = localStorage.getItem("token");
+  const tableNum = localStorage.getItem("tableNumber");
   const navigate = useNavigate();
-  
+
   // Ambil data cart dari localStorage saat pertama render
   useEffect(() => {
     const savedCart = localStorage.getItem("cart");
-    if (savedCart) {
+    
+    if (savedCart && tableNum) {
       setCart(JSON.parse(savedCart));
+    } 
+    if (!tableNum) {
+      alert("Silakan scan QR meja terlebih dahulu untuk melanjutkan.");
+      navigate("/qr-scan");
     }
   }, []);
 
@@ -41,7 +47,7 @@ const Cart = () => {
         menuId: item._id,
         quantity: item.quantity,
       })),
-      tableNumber: "12", // diganti dengan meja hasil scan qr nanti
+      tableNumber: tableNum, // diganti dengan meja hasil scan qr nanti
       status: "Menunggu Konfirmasi"
     };
     // menyimpan ke backend

@@ -1,9 +1,11 @@
 import { Html5Qrcode } from "html5-qrcode";
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CustomQrScanner = ({ onScanSuccess }) => {
   const scannerRef = useRef(null);
   const [scanning, setScanning] = useState(false);
+  const navigate = useNavigate();
 
   const startCameraScan = async () => {
     const scanner = new Html5Qrcode("qr-reader");
@@ -65,7 +67,7 @@ const CustomQrScanner = ({ onScanSuccess }) => {
 
   return (
     <div className="flex flex-col items-center gap-4 w-full">
-      <div className="w-sm aspect-video bg-gray-200 rounded-lg" id="qr-reader" />
+      <div className="w-sm md:w-lg aspect-video bg-gray-200 rounded-lg" id="qr-reader" />
       <div className="flex flex-col gap-3 w- max-w-md mt-4">
         {!scanning ? (
           <button
@@ -85,6 +87,16 @@ const CustomQrScanner = ({ onScanSuccess }) => {
         <label className="bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold text-center cursor-pointer">
           Upload File QR
           <input type="file" accept="image/*" onChange={handleUpload} hidden />
+        </label>
+        <label className="bg-yellow-600 text-white py-2 px-4 rounded-lg font-semibold text-center cursor-pointer">
+          <input
+            type="button"
+            value="Takeaway"
+            onClick={() => {
+              localStorage.setItem("tableNumber", "Takeaway");
+              navigate("/", { state: { tableNumber: "Takeaway" } });
+            }}
+          />
         </label>
       </div>
     </div>
