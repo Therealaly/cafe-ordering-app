@@ -22,7 +22,7 @@ const DashboardKasir = () => {
     if (!qrCode) return alert("Isi nomor meja terlebih dahulu");
 
     try {
-      const res = await axios.post("http://10.200.42.50:5000/api/qrcode/generate", 
+      const res = await axios.post("http://localhost:5000/api/qrcode/generate", 
         { tableNumber: qrCode },
         { headers: {
             Authorization: `Bearer ${token}`,

@@ -14,12 +14,14 @@ const menuRoutes = require("./routes/menuRoutes")
 const promoRoutes = require("./routes/promoRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const qrCodeRoutes = require("./routes/qrCode");
+const recommendation = require("./routes/recommendationRoutes");
 app.use("/api/qrcode", qrCodeRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/promo", promoRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/menu", menuRoutes);
+app.use("/api/recommendation", recommendation);
 
 // Coba koneksi MongoDB
 mongoose.connect(process.env.MONGO_URI)

@@ -31,7 +31,7 @@ const OrdersHistory = () => {
 
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col pb-10">
       <div className="border-b-2 border-gray-300">
         <h1 className="text-black text-xl font-semibold pb-4 pt-5 mx-5">
           Riwayat Pesanan

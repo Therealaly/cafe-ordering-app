@@ -7,6 +7,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  // const [errorMessage, setErrorMessage] = useState("");
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -28,6 +30,7 @@ const Login = () => {
     } catch (error) {
         alert("Login gagal. Periksa kembali email dan password.");
         console.error("Login gagal:", error).response.data || error.message;
+        // setErrorMessage(error.response?.data?.message || "Terjadi kesalahan login");
         }
     };
   
@@ -85,6 +88,7 @@ const Login = () => {
         <p className="text-[#648770] text-sm font-normal leading-normal pb-3 pt-1 px-4 text-center underline">
           Don't have an account? <a href="/register" className="text-green-700 underline">Sign up</a>
         </p>
+         {/* {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>} */}
       </div>
     </div>
   );

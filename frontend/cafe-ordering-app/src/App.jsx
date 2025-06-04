@@ -15,15 +15,6 @@ import './App.css'
 import { useEffect } from 'react'
 
 function App() {
-
-  useEffect(() => {
-    let visitorId = localStorage.getItem("visitorId");
-    if (!visitorId) {
-      visitorId = crypto.randomUUID();
-      localStorage.setItem("visitorId", visitorId);
-    }
-  }, []);
-
   const location = useLocation();
   const hideNav = location.pathname.startsWith('/kasir') || location.pathname.startsWith('/login') || location.pathname.startsWith('/register');
 

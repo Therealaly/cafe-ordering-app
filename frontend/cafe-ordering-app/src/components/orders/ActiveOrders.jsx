@@ -22,7 +22,7 @@ const ActiveOrders = () => {
   }, []);
 
   const activeOrders = orders.filter(order =>
-    ["Menunggu Konfirmasi", "Disiapkan"].includes(order.status)
+    ["Menunggu Konfirmasi", "disiapkan"].includes(order.status)
   );
 
   const statusMap = {
