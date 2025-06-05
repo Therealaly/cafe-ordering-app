@@ -1,12 +1,35 @@
-const RecommendedMenu = ({ onSelect }) => {
-  const recommended = [
-    { id: 1, image: "../src/assets/dev/iced-coffee-latte.jpg", alt: "Cafe Latte", price: 25000 },
-    { id: 2, image: "../src/assets/dev/iced-coffee-latte.jpg", alt: "Cappuccino", price: 25000 },
-    { id: 3, image: "../src/assets/dev/matcha-latte.jpg", alt: "Matcha", price: 30000 },
-    { id: 4, image: "../src/assets/dev/espresso.jpg", alt: "Espresso", price: 22000 },
-    { id: 5, image: "../src/assets/dev/iced-coffee-latte.jpg", alt: "Affogato", price: 27000 },
-  ];
+import { useEffect, useState } from "react";
+import axios from "axios";
 
+const RecommendedMenu = ({ onSelect }) => {
+  const [recommended, setRecommended] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect (() => {
+    const token = localStorage.getItem("token");
+    const userData = localStorage.getItem("user");
+
+    if (!token || !userData) {
+      setLoading(false);
+      return;
+    }
+
+    const user = JSON.parse(userData);
+
+    axios.get(`http://localhost:5000/api/recommendation/${user.id}`, 
+      { headers: {
+        Authorization: `Bearer ${token}`
+      }}
+    ) 
+    .then(response => {
+      setRecommended(response.data);
+    })
+    .catch(error =>{
+      console.error("Error fetching recommended menu:", error);
+    })
+    .finally(() => setLoading(false));
+  }, []);
+    
   return (
     <div className="flex flex-col space-y-2 h-fit">
       <div className="flex flex-col mx-5">
@@ -21,19 +44,32 @@ const RecommendedMenu = ({ onSelect }) => {
       {/* scrollable Menu */}
       <div className="overflow-x-auto whitespace-nowrap scroll-smooth px-5 pb-5 element">
         <div className="flex space-x-5 w-max">
-          {recommended.map(item => (
-            <div 
-              key={item.id} 
-              onClick={() => onSelect(item)}
-              className="flex flex-col items-center">
-              <img
-                src={item.image}
-                alt={item.alt}
-                className="rounded-full h-24 w-24 object-cover"
-              />
-              <p className="text-sm text-black mt-2">{item.alt}</p>
-            </div>
-          ))}
+          {loading
+            ? [1, 2, 3, 4, 5, 6].map(idx => (
+                <div
+                  key={idx}
+                  className="flex flex-col items-center animate-pulse"
+                >
+                  <div className="rounded-full h-24 w-24 bg-gray-200 mb-2" />
+                  <div className="h-4 w-20 bg-gray-200 rounded" />
+                </div>
+              ))
+            : recommended.map(item => (
+                <div 
+                  key={item._id} 
+                  onClick={() => onSelect(item)}
+                  className="flex flex-col items-center cursor-pointer"
+                >
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    loading="lazy"
+                    className="rounded-full h-24 w-24 object-cover"
+                  />
+                  <p className="text-sm text-black mt-2">{item.name}</p>
+                </div>
+              ))
+          }
         </div>
       </div>
     </div>

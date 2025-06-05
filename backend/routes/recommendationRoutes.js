@@ -66,9 +66,10 @@ router.get('/:userId', verifyToken, async (req, res) => {
     // Filter menu yang belum pernah dipesan user
     const orderedIds = orderedMenuId.map(menu => menu._id.toString());
     const recommendedMenus = recommendations
-      .filter(r => !orderedIds.includes(r.menu._id.toString()))
-      .sort((a, b) => b.score - a.score)
-      .map(r => r.menu);
+      .filter(r => !orderedIds.includes(r.menu._id.toString())) // menyaring men uyg belum pernah dipesan
+      .sort((a, b) => b.score - a.score) // mengurutkan berdasarkan skor tertinggi
+      .map(r => r.menu) // mengambi data menu dari hasil rekomendasi
+      .slice(0, 6); // ambil 6 menu teratas
 
     return res.json(recommendedMenus);
   

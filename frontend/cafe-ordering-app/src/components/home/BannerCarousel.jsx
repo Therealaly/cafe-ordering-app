@@ -4,16 +4,21 @@ import axios from "axios";
 
 const BannerCarousel = () => {
   const [banners, setBanners] = useState([]);
-  useEffect(() => { const fetchBanners = async () => {
-    try {
-      const response = await axios.get("http://localhost:5000/api/promo");
-      setBanners(response.data);
-    } catch (error) {
-      console.error("Error fetching banners:", error);
-    }
-  };
+  const [loading, setLoading] = useState(true);
 
-  fetchBanners();
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/promo");
+        setBanners(response.data);
+      } catch (error) {
+        console.error("Error fetching banners:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBanners();
   }, []);
 
   const settings = {
@@ -29,17 +34,22 @@ const BannerCarousel = () => {
 
   return (
     <div className="w-full mb-7">
-      <Slider {...settings}>
-        {banners.map((banner, index) => (
-          <div key={index} className="w-full h-64">
-            <img
-              src={banner.image}
-              alt={banner.alt}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        ))}
-      </Slider>
+      {loading ? (
+        <div className="w-full h-64 rounded-xl bg-gray-200 animate-pulse" />
+      ) : (
+        <Slider {...settings}>
+          {banners.map((banner, index) => (
+            <div key={index} className="w-full h-64 md:h-96">
+              <img
+                src={banner.image}
+                alt={banner.alt}
+                className="w-full h-full object-cover object-center"
+                loading="lazy"
+              />
+            </div>
+          ))}
+        </Slider>
+      )}
     </div>
   );
 };
