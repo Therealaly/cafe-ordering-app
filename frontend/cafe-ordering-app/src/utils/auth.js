@@ -16,6 +16,11 @@ export const isKasir = () => {
   return user?.role === "kasir";
 };
 
+export const isAdmin = () => {
+  const user = getUser();
+  return user?.role === "admin";
+};
+
 export const isLoggedIn = () => {
   return !!getToken();
 };

@@ -10,7 +10,8 @@ const BannerCarousel = () => {
     const fetchBanners = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/promo");
-        setBanners(response.data);
+        const activeBanners = response.data.filter(banner => banner.isActive === true)
+        setBanners(activeBanners);
       } catch (error) {
         console.error("Error fetching banners:", error);
       } finally {

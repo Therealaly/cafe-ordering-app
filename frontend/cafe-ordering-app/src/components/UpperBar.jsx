@@ -20,7 +20,7 @@ const UpperBar = () => {
       <div className="max-h-full">
         <img src="https://ik.imagekit.io/k9csxbksz/logo%20hijau.png?updatedAt=1748360521163" alt="Logo Warna Kopi" className='h-full'/>
       </div>
-      <div className='flex flex-row w-3/5 justify-between p-3 items-center'>
+      <div className='flex flex-row w-3/5 gap-4 p-3 items-center justify-end'>
         <p>Halo, {userName}</p>
         <NavLink to={"/keranjang"} className="max-h-full w-fit">
           <ShoppingCart size={24} className='text-inherit'/>

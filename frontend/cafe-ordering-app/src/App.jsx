@@ -10,18 +10,19 @@ import DashboardKasir from './pages/DashboardKasir'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import QrScan from './pages/QrScan'
+import DashboardAdmin from './pages/DashboardAdmin'
+import MainPage from './components/admin/mainPage'
+import EditMenu from './components/admin/editMenu'
+import EditBanner from './components/admin/editBanner'
+import EditRole from './components/admin/editRole'
 
 import './App.css'
 import { useEffect } from 'react'
 
 function App() {
   const location = useLocation();
-  const hideNav = location.pathname.startsWith('/kasir') || location.pathname.startsWith('/login') || location.pathname.startsWith('/register');
+  const hideNav = location.pathname.startsWith('/kasir') || location.pathname.startsWith('/login') || location.pathname.startsWith('/register') || location.pathname.startsWith('/admin');
 
-  const isKasirLoggedIn = () => {
-    const auth = JSON.parse(localStorage.getItem("kasirAuth"));
-    return auth.role("kasir")
-  }
 
   return (
     <div className='w-full h-full'>
@@ -34,10 +35,17 @@ function App() {
         <Route path='/login' element={<Login/>} />
         <Route path='/register' element={<Register/>} />
         <Route path='/qr-scan' element={<QrScan/>} />
-  
-        {/* Kasir Routes */}
-        <Route path='/kasir/dashboard' element={
-          isKasirLoggedIn ? <DashboardKasir/> : <Navigate to={"/kasir/login"}/> } />
+        {/* Admin & Kasir Routes */}
+        <Route path="/admin/*" element={<DashboardAdmin />}>
+          <Route path="dashboard" element={<MainPage />} />
+          <Route path="menu" element={<EditMenu />} />
+          <Route path="banner" element={<EditBanner />} />
+          <Route path="users" element={<EditRole />} />
+        </Route>
+
+
+        <Route path='/kasir/dashboard' element={<DashboardKasir/>}/>
+
         {/* <Route path="/ganti-password" element={<GantiPassword />} />
         <Route path="/ubah-nama" element={<UbahNama />} />
         <Route path="/kontak" element={<Kontak />} />

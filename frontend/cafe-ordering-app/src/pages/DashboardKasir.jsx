@@ -103,7 +103,7 @@ const DashboardKasir = () => {
   return (
     <>
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
           <div className="flex flex-col bg-white p-10 rounded-lg shadow-lg max-w-sm text-center space-y-4 items-center">
             <h3 className="text-lg font-semibold text-black">QR Code Meja</h3>
             <QRCodeSVG value={generatedQrData} size={300} />

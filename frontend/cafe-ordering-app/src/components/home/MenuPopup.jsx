@@ -17,7 +17,7 @@ const MenuPopup = ({ menu, onClose, onAddToCart }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black backdrop-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-49">
       <div className="bg-white p-5 rounded-xl shadow-lg w-11/12 max-w-md">
         <h2 className="text-lg font-bold text-black">{menu.name}</h2>
         <p className="text-sm text-gray-600 mb-2">Rp {menu.price.toLocaleString("ID")}</p>

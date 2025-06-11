@@ -23,4 +23,40 @@ const createMenu = async (req, res) => {
   }
 }
 
-module.exports = { getMenus, createMenu };
+const editMenu = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, description, price, image, category, tags } = req.body;
+
+    const updatedMenu = await Menu.findByIdAndUpdate(
+      id,
+      { name, description, price, image, category, tags },
+      { new: true }
+    );
+
+    if (!updatedMenu) {
+      return res.status(404).json({ message: 'Menu tidak ditemukan' });
+    }
+
+    res.status(200).json({ message: 'Menu berhasil diupdate', menu: updatedMenu });
+  } catch (err) {
+    res.status(500).json({ message: 'Gagal mengupdate menu', error: err.message });
+  }
+}
+
+const deleteMenu = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedMenu = await Menu.findByIdAndDelete(id);
+
+    if (!deletedMenu) {
+      return res.status(404).json({ message: 'Menu tidak ditemukan' });
+    }
+
+    res.status(200).json({ message: 'Menu berhasil dihapus' });
+  } catch (err) {
+    res.status(500).json({ message: 'Gagal menghapus menu', error: err.message });
+  }
+}
+
+module.exports = { getMenus, createMenu, editMenu, deleteMenu };

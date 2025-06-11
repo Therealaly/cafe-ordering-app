@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { getMenus, createMenu } = require("../controllers/menuControllers")
-const verifyToken = require("../middleware/authMiddleware")
+const { getMenus, createMenu, deleteMenu, editMenu } = require("../controllers/menuControllers")
+const verifyAdmin = require("../middleware/verifyAdmin");
 
 router.get("/", getMenus);
-router.post("/", verifyToken, createMenu);
+router.post("/", verifyAdmin, createMenu);
+router.delete("/:id", verifyAdmin, deleteMenu);
+router.put("/:id", verifyAdmin, editMenu);
 
 module.exports = router;

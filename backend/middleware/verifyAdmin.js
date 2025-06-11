@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
-const verifyKasir = async (req, res, next) => {
+const verifyAdmin = async (req, res, next) => {
   try {
     const token = req.header("Authorization")?.split(" ")[1];
     if (!token) return res.status(401).json({ message: "Token tidak ditemukan" });
@@ -9,8 +9,8 @@ const verifyKasir = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);
 
-    if (!user || user.role !== 'kasir' || user.role !== 'admin') {
-      return res.status(403).json({ message: "Akses ditolak: bukan kasir" });
+    if (user.role !== 'admin' && user.role !== 'superadmin') {
+      return res.status(403).json({ message: "Akses ditolak: bukan admin" });
     }
 
     req.user = user;
@@ -20,4 +20,4 @@ const verifyKasir = async (req, res, next) => {
   }
 };
 
-module.exports = verifyKasir;
+module.exports = verifyAdmin;
