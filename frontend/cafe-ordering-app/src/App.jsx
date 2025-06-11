@@ -17,7 +17,6 @@ import EditBanner from './components/admin/editBanner'
 import EditRole from './components/admin/editRole'
 
 import './App.css'
-import { useEffect } from 'react'
 
 function App() {
   const location = useLocation();
