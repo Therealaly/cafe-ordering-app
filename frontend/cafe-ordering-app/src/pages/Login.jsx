@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [alert, setAlert] = useState("")
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -28,8 +29,9 @@ const Login = () => {
         navigate("/qr-scan");
       }
     } catch (error) {
-        alert("Login gagal. Periksa kembali email dan password.");
-        console.error("Login gagal:", error).response.data || error.message;
+        const errorMessage = error.response?.data?.message || error.message;
+        setAlert(errorMessage);
+        console.error("Login gagal:", errorMessage)
         }
     };
   
@@ -55,6 +57,11 @@ const Login = () => {
         <h1 className="px-4 text-lg font-semibold text-gray-800 mt-2">
           Login to Your Account
         </h1>
+        { alert && (
+          <div className="px-4 py-2 mx-4 mt-2 bg-red-800 text-white text-sm font-semibold rounded-lg">
+            <p>{alert}</p>
+          </div>
+        )}
         <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
           <label className="flex flex-col min-w-40 flex-1">
           <input
@@ -75,6 +82,14 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
           </label>
+        </div>
+        <div>
+          <button
+            className="flex items-center justify-end px-4 py-2 text-sm text-gray-600 hover:text-green-700"
+            onClick={() => navigate("/forgot-password")}
+          >
+            <span>Forgot Password?</span>
+          </button>
         </div>
         <div className="flex px-4 py-3">
           <button

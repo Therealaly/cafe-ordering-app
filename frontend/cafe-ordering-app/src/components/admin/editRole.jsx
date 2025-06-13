@@ -97,7 +97,6 @@ const EditRole = () => {
     const paginatedUsers = allUsersToDisplay.slice(startIndex, endIndex); 
 
     const handlePageClick = (pageNumber) => {
-      // ...existing code...
       if (pageNumber >= 1 && pageNumber <= totalPages) {
         onPageChange(pageNumber);
       }
