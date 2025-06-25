@@ -1,0 +1,306 @@
+[
+  {
+    "category": "Kopi Bener",
+    "items": [
+      {
+        "name": "Espresso",
+        "price": {
+          "hot": 18000,
+          "ice": null
+        },
+        "description": "Minuman kopi murni dengan rasa pahit kuat dan aroma tajam. Pilihan terbaik untuk penikmat kopi sejati.",
+        "composition": "espresso arabika 1 shot (18ml) + air putih"
+      },
+      {
+        "name": "Americano",
+        "price": {
+          "hot": 20000,
+          "ice": 22000
+        },
+        "description": "Rasakan kesegaran kopi hitam ringan namun tetap mantap dengan aftertaste khas espresso.",
+        "composition": "2 shot espresso arabika (36ml) + air panas / es"
+      },
+      {
+        "name": "Cappuccino",
+        "price": {
+          "hot": 25000,
+          "ice": 27000
+        },
+        "description": "Perpaduan sempurna antara espresso dan foam susu lembut, memberikan tekstur creamy yang memanjakan.",
+        "composition": "1 shot espresso + 150ml susu FM + foam"
+      },
+      {
+        "name": "Caffe Latte",
+        "price": {
+          "hot": 25000,
+          "ice": 27000
+        },
+        "description": "Lebih ringan dari cappuccino, cocok untuk kamu yang suka kopi susu halus. Tambahan rasa butterscotch/hazelnut memberi twist manis.",
+        "composition": "25ml espresso + 150ml susu fresh milk (FM), tambahan butterscotch/hazelnut (+2000)"
+      },
+      {
+        "name": "Caffe Mocha",
+        "price": {
+          "hot": 27000,
+          "ice": 29000
+        },
+        "description": "Nikmatnya latte dengan sentuhan cokelat untuk kamu yang ingin kopi manis pahit.",
+        "composition": "25ml espresso + susu FM + 20gr dark chocolate"
+      },
+      {
+        "name": "Affogato",
+        "price": 25000,
+        "description": "Dessert klasik Italia yang menggabungkan panas dan dingin dalam satu gigitan.",
+        "composition": "2 scoop es krim vanilla + 1 shot espresso arabika hangat"
+      }
+    ]
+  },
+  {
+    "category": "Liyane Kopi",
+    "items": [
+      {
+        "name": "Milkshake",
+        "price": {
+          "hot": null,
+          "ice": 25000
+        },
+        "description": "Minuman creamy, manis, dan dingin yang cocok untuk pelepas dahaga maupun pencuci mulut.",
+        "composition": "Strawberry/Banana/Chocolate/Vanilla/Mix + 100ml Susu UHT + 15ml simple syrup + 1 scoop es krim vanilla + es batu"
+      },
+      {
+        "name": "Smoothies",
+        "price": {
+          "hot": null,
+          "ice": 22000
+        },
+        "description": "Terbuat dari buah asli, dikombinasi dengan yoghurt dan es batu untuk sensasi lembut dan segar.",
+        "composition": "Buah (Strawberry/Banana/Mix) + 30ml yoghurt + 100ml UHT + syrup + es batu"
+      },
+      {
+        "name": "Juice",
+        "price": {
+          "hot": null,
+          "ice": 18000
+        },
+        "description": "100% buah segar, tanpa pengawet. Pilihan sehat dan alami.",
+        "composition": "Buah (Strawberry/Banana/Mix) + 100ml UHT + syrup + es batu"
+      },
+      {
+        "name": "Lemon Squash",
+        "price": {
+          "hot": null,
+          "ice": 22000
+        },
+        "description": "Kesegaran citrus dan sparkling soda yang menggugah semangat.",
+        "composition": "120ml soda + 15ml sunquick lemon + irisan lemon + biji selasih + es batu"
+      },
+      {
+        "name": "Classic Tea",
+        "price": {
+          "hot": 7000,
+          "ice": 9000
+        },
+        "description": "Kesederhanaan teh yang nikmat dan menenangkan.",
+        "composition": "Teh melati + air panas / es batu + 30ml simple syrup"
+      },
+      {
+        "name": "Lemon Tea",
+        "price": {
+          "hot": 15000,
+          "ice": 17000
+        },
+        "description": "Teh klasik yang diberi sentuhan asam menyegarkan.",
+        "composition": "Teh melati + lemon syrup + irisan lemon + es batu + simple syrup"
+      },
+      {
+        "name": "Lychee Tea",
+        "price": {
+          "hot": null,
+          "ice": 18000
+        },
+        "description": "Manis dan harum, cocok untuk dinikmati sore hari.",
+        "composition": "Teh melati + buah leci + air leci + simple syrup + es batu"
+      },
+      {
+        "name": "Choco Mint",
+        "price": {
+          "hot": null,
+          "ice": 27000
+        },
+        "description": "Minuman segar dan manis dengan aroma mint yang menyegarkan.",
+        "composition": "20gr cokelat bubuk + 20ml peppermint syrup + 1 scoop es krim vanilla"
+      },
+      {
+        "name": "Chocolate",
+        "price": {
+          "hot": 23000,
+          "ice": 25000
+        },
+        "description": "Manis, lembut, dan kaya rasa.",
+        "composition": "15gr cokelat bubuk premium + 150ml susu FM + 20ml simple syrup"
+      },
+      {
+        "name": "Ice Cream",
+        "price": {
+          "hot": null,
+          "ice": 18000
+        },
+        "description": "Camilan dingin untuk pelengkap kopi atau dessert ringan.",
+        "composition": "2 scoop es krim vanilla"
+      },
+      {
+        "name": "Matcha Latte",
+        "price": {
+          "hot": 22000,
+          "ice": 25000
+        },
+        "description": "Perpaduan rasa teh hijau yang kaya dengan kelembutan susu.",
+        "composition": "20gr Matcha Powder + 150ml susu FM + es batu"
+      },
+      {
+        "name": "Air Mineral Kecil",
+        "price": 5000,
+        "description": "Air mineral tersedia dalam kemasan kecil dan besar.",
+        "composition": "Le Minerale 330ml"
+      },
+      {
+        "name": "Air Mineral Besar",
+        "price": 7000,
+        "description": "Air mineral tersedia dalam kemasan kecil dan besar.",
+        "composition": "Pristine 8.6+ 600ml"
+      }
+    ]
+  },
+  {
+    "category": "Kopi Suka-Suka",
+    "items": [
+      {
+        "name": "Aren",
+        "price": {
+          "hot": null,
+          "ice": 22000
+        },
+        "description": "Manis alami dari gula aren berpadu kopi yang kuat, jadi favorit semua kalangan.",
+        "composition": "18ml espresso robusta + 30ml gula aren + 30ml creamer + 100ml UHT + es batu"
+      },
+      {
+        "name": "Karamel",
+        "price": {
+          "hot": null,
+          "ice": 22000
+        },
+        "description": "Perpaduan rasa pahit kopi dan manisnya karamel yang memikat.",
+        "composition": "18ml espresso robusta + 30ml karamel + 30ml creamer + 100ml UHT + es batu"
+      },
+      {
+        "name": "Djowo",
+        "price": {
+          "hot": null,
+          "ice": 22000
+        },
+        "description": "Cita rasa khas kopi susu lokal yang menggoda.",
+        "composition": "18ml espresso robusta + 30ml susu kental manis + 30ml creamer + 100ml UHT + es batu"
+      },
+      {
+        "name": "Legi",
+        "price": {
+          "hot": null,
+          "ice": 22000
+        },
+        "description": "Minuman manis dan ringan berbasis espresso untuk kamu yang suka rasa unik.",
+        "composition": "30ml syrup (original/strawberry/melon) + 18ml espresso robusta + 30ml creamer + 100ml UHT + es batu"
+      }
+    ]
+  },
+  {
+    "category": "Signature",
+    "items": [
+      {
+        "name": "Mocktail Coffee",
+        "price": {
+          "hot": null,
+          "ice": 27000
+        },
+        "description": "Kombinasi menyegarkan dan unik untuk kamu pecinta petualangan rasa.",
+        "composition": "160ml Jungle Juice + 20ml strawberry syrup + 2 shot arabika + 120ml soda + es batu"
+      },
+      {
+        "name": "Black Sunny",
+        "price": {
+          "hot": null,
+          "ice": 27000
+        },
+        "description": "Kopi berkarbonasi dengan rasa citrus yang menyegarkan dan beda dari yang lain.",
+        "composition": "20ml sunquick + 15ml simple syrup + 120ml soda + 36ml espresso arabika + es batu"
+      },
+      {
+        "name": "Day Dream",
+        "price": {
+          "hot": null,
+          "ice": 27000
+        },
+        "description": "Manis dan creamy, cocok sebagai pengganti dessert.",
+        "composition": "2 shot arabika + 40ml creamer + 20ml susu kental manis"
+      }
+    ]
+  },
+  {
+    "category": "Nyamikan + Maeman",
+    "items": [
+      {
+        "name": "Snack Set",
+        "price": 18000,
+        "description": "Aneka snack ringan khas kaki lima dan street food Indonesia.",
+        "composition": "Brulee Bomb / Samosa / Cireng / Pisang Nugget / Kentang / Budin / Lumpia / Jasuke / Lumpia Rebung"
+      },
+      {
+        "name": "Mix Platter",
+        "price": 25000,
+        "description": "Cocok untuk sharing!",
+        "composition": "Kentang + sosis + nugget"
+      },
+      {
+        "name": "Chicken Katsu",
+        "price": 25000,
+        "description": "Ayam krispi disajikan dengan topping pilihan favoritmu.",
+        "composition": "Katsu + saus (teriyaki/mayo/blackpepper)"
+      },
+      {
+        "name": "Chicken Karage",
+        "price": 25000,
+        "description": "Ayam potong kecil digoreng renyah dan diberi bumbu khas.",
+        "composition": "Karage + saus (matah/teriyaki)"
+      },
+      {
+        "name": "Croissant",
+        "price": 25000,
+        "description": "Roti lapis berlapis lembut, cocok sebagai sarapan atau snack sore.",
+        "composition": "Plain / Keju / Cokelat / Almond"
+      },
+      {
+        "name": "Cinnamon Roll",
+        "price": 25000,
+        "description": "Lembut, wangi kayu manis, dan gula karamel. Manisnya pas!",
+        "composition": "Roti manis kayu manis"
+      },
+      {
+        "name": "Ramen Katsu",
+        "price": 25000,
+        "description": "Mie ala Jepang dengan potongan katsu, kuah gurih atau pedas.",
+        "composition": "Ramen kuah miso / kara + katsu"
+      },
+      {
+        "name": "Mie Goreng Blackpepper",
+        "price": 22000,
+        "description": "Mie goreng ala cafe dengan bumbu blackpepper ala warna yang gurih pedas.",
+        "composition": "Mie goreng + topping (telur/sosis/katsu)"
+      },
+      {
+        "name": "Nasi Goreng",
+        "price": 23000,
+        "description": "Cocok untuk menu berat saat lapar menyerang!",
+        "composition": "Nasi goreng + topping (telur/sosis/sosis+telur)"
+      }
+    ]
+  }
+]
