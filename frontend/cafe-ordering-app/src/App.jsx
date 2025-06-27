@@ -17,6 +17,7 @@ import EditBanner from './components/admin/editBanner'
 import EditRole from './components/admin/editRole'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
+import ChatBot from './pages/chatbot'
 
 import './App.css'
 
@@ -36,6 +37,7 @@ function App() {
         <Route path='/login' element={<Login/>} />
         <Route path='/register' element={<Register/>} />
         <Route path='/qr-scan' element={<QrScan/>} />
+        <Route path='/chatbot' element={<ChatBot/>} />
         {/* Admin & Kasir Routes */}
         <Route path="/admin/*" element={<DashboardAdmin />}>
           <Route path="dashboard" element={<MainPage />} />

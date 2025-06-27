@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { House, ClipboardList, User } from 'lucide-react';
+import { House, ClipboardList, User, Bot } from 'lucide-react';
 
 const BottomNav = () => {
   return (
@@ -12,6 +12,10 @@ const BottomNav = () => {
         <NavLink to={"/pesanan"} className={({ isActive }) => `flex flex-col items-center pt-1.5 w-20 ${isActive ? 'text-green-950 border-t-2 border-green-950 font-semibold' : 'text-gray-600 border-t-2 border-white'}`}>
           <ClipboardList size={24} className='text-inherit'/>
           <span className='text-sm'>Pesanan</span>
+        </NavLink>
+        <NavLink to={"/chatbot"} className={({ isActive }) => `flex flex-col items-center pt-1.5 w-20 ${isActive ? 'text-green-950 border-t-2 border-green-950 font-semibold' : 'text-gray-600 border-t-2 border-white'}`}>
+          <Bot size={24} className='text-inherit'/>
+          <span className='text-sm'>WarnaBee</span>
         </NavLink>
         <NavLink to={"/profil"} className={({ isActive }) => `flex flex-col items-center pt-1.5 w-20 ${isActive ? 'text-green-950 border-t-2 border-green-950 font-semibold' : 'text-gray-600 border-t-2 border-white'}`}>
           <User size={24} className='text-inherit'/>
