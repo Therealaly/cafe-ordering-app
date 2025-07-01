@@ -23,7 +23,7 @@ const Register = () => {
             'url("https://ik.imagekit.io/k9csxbksz/Reservasi%20wk.jpg?updatedAt=1748360416867")'
         }}
       ></div>
-      <div className="flex flex-col bg-gray-50 overflow-x-hidden w-full max-w-xs mx-auto flex-1">
+      <div className="flex flex-col bg-gray-50 overflow-x-hidden w-full max-w-md mx-auto flex-1">
         <div className="flex justify-center pt-4 pb-2">
           <img
             src="https://ik.imagekit.io/k9csxbksz/logo%20hijau.png?updatedAt=1748360521163"
@@ -31,79 +31,71 @@ const Register = () => {
             className="h-16"
           />
         </div>
-        <div className="flex max-w-xs flex-wrap items-end gap-2 px-2 py-2">
-          <label className="flex flex-col min-w-0 flex-1">
-            <input
-              name="name"
-              placeholder="Name"
-              className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111713] focus:outline-0 focus:ring-0 border-none bg-gray-200 focus:border-none h-10 placeholder:text-[#648770] p-3 text-sm font-normal leading-normal"
-              value={form.name}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-        <div className="flex max-w-xs flex-wrap items-end gap-2 px-2 py-2">
-          <label className="flex flex-col min-w-0 flex-1">
-            <input
-              name="email"
-              type="email"
-              placeholder="Email"
-              className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111713] focus:outline-0 focus:ring-0 border-none bg-gray-200 focus:border-none h-10 placeholder:text-[#648770] p-3 text-sm font-normal leading-normal"
-              value={form.email}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-        <div className="flex max-w-xs flex-wrap items-end gap-2 px-2 py-2">
-          <label className="flex flex-col min-w-0 flex-1">
-            <input
-              name="password"
-              type="password"
-              placeholder="Password"
-              className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111713] focus:outline-0 focus:ring-0 border-none bg-gray-200 focus:border-none h-10 placeholder:text-[#648770] p-3 text-sm font-normal leading-normal"
-              value={form.password}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-        <div className="flex max-w-xs flex-wrap items-end gap-2 px-2 py-2">
-          <label className="flex flex-col min-w-0 flex-1">
-            <input
-              name="confirmPassword"
-              type="password"
-              placeholder="Confirm Password"
-              className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111713] focus:outline-0 focus:ring-0 border-none bg-gray-200 focus:border-none h-10 placeholder:text-[#648770] p-3 text-sm font-normal leading-normal"
-              value={form.confirmPassword}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-        <div className="flex items-center px-2 py-1">
-          <input
-            type="checkbox"
-            name="agree"
-            checked={form.agree}
-            onChange={handleChange}
-            className="mr-2"
-            id="agree"
+        
+        <h1 className="px-4 text-lg font-semibold text-gray-800 mt-2">
+          Create Your Account
+        </h1>
+        
+        {error && <AlertMessage message={error} type="error" />}
+        
+        <form onSubmit={handleRegister}>
+          <FormInput
+            placeholder="Name"
+            value={formData.name}
+            onChange={(value) => handleInputChange('name', value)}
           />
-          <label htmlFor="agree" className="text-[#648770] text-xs">
-            I agree to the <span className="underline cursor-pointer">Privacy Notice</span>
-          </label>
-        </div>
-        <div className="flex px-2 py-2">
-          <button
-            className="flex min-w-[72px] max-w-xs cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 flex-1 bg-green-700 text-white text-sm font-semibold"
-            disabled={!form.name || !form.email || !form.password || !form.confirmPassword || !form.agree}
-            onClick={handleRegister}
+          
+          <FormInput
+            type="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={(value) => handleInputChange('email', value)}
+          />
+          
+          <FormInput
+            type="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={(value) => handleInputChange('password', value)}
+          />
+          
+          <FormInput
+            type="password"
+            placeholder="Confirm Password"
+            value={formData.confirmPassword}
+            onChange={(value) => handleInputChange('confirmPassword', value)}
+          />
+          
+          <FormCheckbox
+            checked={formData.agree}
+            onChange={(checked) => handleInputChange('agree', checked)}
           >
-            <span className="truncate">Sign Up</span>
+            I agree to the <span className="underline cursor-pointer">Privacy Notice</span>
+          </FormCheckbox>
+          
+          <div className="flex px-4 py-3">
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 flex-1 bg-green-700 hover:bg-green-800 disabled:bg-gray-400 disabled:cursor-not-allowed text-white text-base font-semibold leading-normal tracking-[0.015em] transition-colors"
+            >
+              <span className="truncate">
+                {loading ? "Creating Account..." : "Sign Up"}
+              </span>
+            </button>
+          </div>
+        </form>
+        
+        <p className="text-[#648770] text-sm font-normal leading-normal pb-3 pt-1 px-4 text-center">
+          Already have an account? 
+          <button 
+            type="button"
+            onClick={navigateToLogin}
+            className="text-green-700 underline ml-1 hover:text-green-800"
+          >
+            Login
           </button>
-        </div>
-        <p className="text-[#648770] text-xs font-normal leading-normal pb-2 pt-1 px-2 text-center underline">
-          Already have an account? <a href="/login" className="text-green-700 underline">Login</a>
         </p>
-        <div className="h-4 bg-white"></div>
       </div>
     </div>
   );

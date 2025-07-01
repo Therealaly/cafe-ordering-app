@@ -1,39 +1,17 @@
-import { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useForgotPasswordForm } from "../hooks/useForgotPasswordForm";
+import FormInput from "../components/common/FormInput";
+import AlertMessage from "../components/common/AlertMessage";
 
 const ForgotPassword = () => {
-  const [successAlert, setSuccessAlert] = useState("");
-  const [errorAlert, setErrorAlert] = useState("");
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate(); // Initialize navigate
-
-  const handleResetPassword = async (e) => {
-    e.preventDefault(); // Prevent default form submission if it were a form
-    setErrorAlert("");
-    setSuccessAlert("");
-    setLoading(true);
-
-    if (!email) {
-      setErrorAlert("Silakan masukkan alamat email Anda.");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      // Call the endpoint that sends the reset password email
-      const response = await axios.post(`http://localhost:5000/api/auth/send-reset-password`, { email });
-      setSuccessAlert(response.data.message || "Jika email terdaftar, link reset password telah dikirimkan.");
-      setEmail(""); // Clear email field on success
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || "Gagal mengirim link reset password. Silakan coba lagi.";
-      setErrorAlert(errorMessage);
-      console.error("Gagal mengirim link reset password:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    email,
+    loading,
+    error,
+    success,
+    handleEmailChange,
+    handleSubmit,
+    navigateToLogin
+  } = useForgotPasswordForm();
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -54,57 +32,47 @@ const ForgotPassword = () => {
           />
         </div>
         <h1 className="px-4 text-xl font-semibold text-gray-800 mt-2 mb-2 text-center">
-          Lupa Password Anda?
+          Forgot Your Password?
         </h1>
         <p className="px-4 text-sm text-gray-600 mb-4 text-center">
-          Jangan khawatir! Masukkan email Anda di bawah ini dan kami akan mengirimkan link untuk mengatur ulang password anda.
+          Don't worry! Enter your email below and we'll send you a link to reset your password.
         </p>
         
-        {successAlert && (
-          <div className="px-4 py-3 mx-auto mb-4 w-full bg-green-600 text-white text-sm font-semibold rounded-lg text-center">
-            <p>{successAlert}</p>
-          </div>
-        )}
-        {errorAlert && (
-          <div className="px-4 py-3 mx-auto mb-4 w-full bg-red-700 text-white text-sm font-semibold rounded-lg text-center">
-            <p>{errorAlert}</p>
-          </div>
-        )}
+        {success && <AlertMessage message={success} type="success" />}
+        {error && <AlertMessage message={error} type="error" />}
 
-        {!successAlert && ( // Hide form if success message is shown
-          <form onSubmit={handleResetPassword}>
-            <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label className="flex flex-col min-w-40 flex-1">
-                <span className="text-sm font-medium text-gray-700 mb-1">Alamat Email</span>
-                <input
-                  placeholder="Masukkan Email Terdaftar"
-                  type="email"
-                  className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-black focus:outline-0 focus:ring-0 border-none bg-gray-200 focus:border-none h-14 placeholder:text-[#648770] p-4 text-base font-normal leading-normal"
-                  onChange={(e) => setEmail(e.target.value)}
-                  value={email}
-                  required
-                  disabled={loading}
-                />
-              </label>
-            </div>
+        {!success && ( // Hide form if success message is shown
+          <form onSubmit={handleSubmit}>
+            <FormInput
+              type="email"
+              placeholder="Enter your registered email"
+              value={email}
+              onChange={handleEmailChange}
+              disabled={loading}
+            />
+            
             <div className="flex px-4 py-3 mt-2">
               <button
                 type="submit"
-                className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 flex-1 bg-green-700 text-white text-base font-semibold leading-normal tracking-[0.015em] hover:bg-green-800 transition duration-200 disabled:opacity-70"
                 disabled={loading}
+                className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 flex-1 bg-green-700 hover:bg-green-800 disabled:bg-gray-400 disabled:cursor-not-allowed text-white text-base font-semibold leading-normal tracking-[0.015em] transition-colors"
               >
-                {loading ? "Mengirim..." : "Kirim Link Reset Password"}
+                <span className="truncate">
+                  {loading ? "Sending..." : "Send Reset Link"}
+                </span>
               </button>
             </div>
           </form>
         )}
-         <div className="text-center mt-6">
-            <button
-                onClick={() => navigate("/login")}
-                className="text-sm text-green-700 hover:underline"
-            >
-                Kembali ke Login
-            </button>
+        
+        <div className="text-center mt-6">
+          <button
+            type="button"
+            onClick={navigateToLogin}
+            className="text-sm text-green-700 hover:underline"
+          >
+            Back to Login
+          </button>
         </div>
       </div>
     </div>
