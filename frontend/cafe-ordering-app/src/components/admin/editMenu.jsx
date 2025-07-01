@@ -1,34 +1,32 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { Pen, Trash, Plus, ChevronLeft, ChevronRight } from "lucide-react";
-import FormMenu from "../admin/form/formMenu"; // Assuming you have FormMenu.jsx
-
-const ITEMS_PER_PAGE = 6;
+import { useState } from "react";
+import { Pen, Trash, Plus } from "lucide-react";
+import FormMenu from "../admin/form/formMenu";
+import LoadingSkeleton from "../common/LoadingSkeleton";
+import Pagination from "../common/Pagination";
+import ConfirmDialog from "../common/ConfirmDialog";
+import { useMenus } from "../../hooks/useMenus";
+import { usePagination } from "../../hooks/usePagination";
+import { PAGINATION_CONFIG, MESSAGES } from "../../utils/constants";
 
 const EditMenu = () => {
-  const [menus, setMenus] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    loading,
+    createMenu,
+    updateMenu,
+    deleteMenu,
+    getMenusByCategory,
+  } = useMenus();
+
   const [editingMenu, setEditingMenu] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
-  const [minumanCurrentPage, setMinumanCurrentPage] = useState(1);
-  const [makananCurrentPage, setMakananCurrentPage] = useState(1);
+  // Separate pagination for each category
+  const makananMenus = getMenusByCategory("Makanan");
+  const minumanMenus = getMenusByCategory("Minuman");
 
-  const fetchMenus = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get("http://localhost:5000/api/menu"); // Adjust API endpoint if needed
-      setMenus(response.data);
-    } catch (error) {
-      console.error("Error fetching menus:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchMenus();
-  }, []);
+  const makananPagination = usePagination(makananMenus, PAGINATION_CONFIG.MENU_ITEMS_PER_PAGE);
+  const minumanPagination = usePagination(minumanMenus, PAGINATION_CONFIG.MENU_ITEMS_PER_PAGE);
 
   const handleEditMenu = (menu) => {
     setEditingMenu(menu);
@@ -40,69 +38,31 @@ const EditMenu = () => {
     setShowForm(true);
   };
 
-  const deleteMenu = async (id) => {
-    try {
-      await axios.delete(`http://localhost:5000/api/menu/${id}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-      setMenus(menus.filter(menu => menu._id !== id));
-    } catch (error) {
-      console.error("Error deleting menu:", error);
-      alert("Gagal menghapus menu: " + (error.response?.data?.message || error.message));
-    }
+  const handleDeleteClick = (menu) => {
+    setConfirmDelete(menu);
   };
 
   const handleFormSubmit = async (data) => {
-    setLoading(true); // Consider a different loading state for form submission if needed
     try {
       if (editingMenu && editingMenu._id) {
-        await axios.put(`http://localhost:5000/api/menu/${editingMenu._id}`, data, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
+        await updateMenu(editingMenu._id, data);
       } else {
-        await axios.post("http://localhost:5000/api/menu", data, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
+        await createMenu(data);
       }
-      fetchMenus(); // Refresh menus list
       setShowForm(false);
       setEditingMenu(null);
     } catch (error) {
-      console.error("Error submitting menu form:", error);
-      alert("Gagal menyimpan menu: " + (error.response?.data?.message || error.message));
-    } finally {
-      setLoading(false); // Reset general loading or form-specific loading
+      alert(MESSAGES.ERROR_SAVE_MENU + error.message);
     }
   };
 
-   const renderMenuTable = (title, fullFilteredMenus, currentPage, onPageChange) => {
-    const totalItems = fullFilteredMenus.length;
-    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const endIndex = startIndex + ITEMS_PER_PAGE;
-    const paginatedMenus = fullFilteredMenus.slice(startIndex, endIndex);
-
-    const handlePageClick = (pageNumber) => {
-      if (pageNumber >= 1 && pageNumber <= totalPages) {
-        onPageChange(pageNumber);
-      }
-    };
-  
-    const pageNumbers = [];
-    for (let i = 1; i <= totalPages; i++) {
-      pageNumbers.push(i);
-    }
+   const renderMenuTable = (title, categoryMenus, pagination) => {
+    const { data: paginatedMenus, totalPages, currentPage } = pagination;
 
     return (
       <div className="mb-8">
         <h3 className="text-xl font-semibold text-black mb-3">{title}</h3>
-        {totalItems === 0 && !loading ? (
+        {categoryMenus.length === 0 && !loading ? (
           <p className="text-gray-500">Tidak ada menu dalam kategori ini.</p>
         ) : (
           <>
@@ -142,11 +102,7 @@ const EditMenu = () => {
                           </button>
                           <button
                             className="rounded-md bg-red-600 text-white p-2 hover:bg-red-700 transition"
-                            onClick={() => {
-                              if (window.confirm(`Apakah Anda yakin ingin menghapus menu "${menu.name}"?`)) {
-                                deleteMenu(menu._id);
-                              }
-                            }}
+                            onClick={() => handleDeleteClick(menu)}
                             aria-label="Delete Menu"
                           >
                             <Trash size={16} />
@@ -159,45 +115,16 @@ const EditMenu = () => {
               </table>
             </div>
 
-            {totalPages > 1 && (
-              <div className="mt-4 flex justify-center items-center space-x-2 text-black">
-                <button
-                  onClick={() => handlePageClick(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="p-2 rounded-md border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                  aria-label="Previous Page"
-                >
-                  <ChevronLeft size={20} />
-                </button>
-                {pageNumbers.map(number => (
-                  <button
-                    key={number}
-                    onClick={() => handlePageClick(number)}
-                    className={`px-3 py-1 rounded-md border ${currentPage === number ? 'bg-green-600 text-white border-green-600' : 'bg-white border-gray-300 hover:bg-gray-50'}`}
-                  >
-                    {number}
-                  </button>
-                ))}
-                <button
-                  onClick={() => handlePageClick(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="p-2 rounded-md border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                  aria-label="Next Page"
-                >
-                  <ChevronRight size={20} />
-                </button>
-              </div>
-            )}
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={pagination.handlePageChange}
+            />
           </>
         )}
       </div>
     );
   };
-
-  const makananMenus = menus.filter(menu => menu.category === "Makanan");
-  const minumanMenus = menus.filter(menu => menu.category === "Minuman");
-  // const cemilanMenus = menus.filter(menu => menu.category === "Cemilan");
-
 
   return (
     <div className="w-full h-full flex flex-col p-4 md:p-6 bg-gray-50 min-h-screen">
@@ -241,10 +168,27 @@ const EditMenu = () => {
         </div>
       ) : (
         <>
-          {renderMenuTable("Minuman", minumanMenus, minumanCurrentPage, setMinumanCurrentPage)}
-          {renderMenuTable("Makanan", makananMenus, makananCurrentPage, setMakananCurrentPage)}
+          {renderMenuTable("Minuman", minumanMenus, minumanPagination)}
+          {renderMenuTable("Makanan", makananMenus, makananPagination)}
         </>
       )}
+
+      <ConfirmDialog
+        isOpen={!!confirmDelete}
+        onConfirm={async () => {
+          if (confirmDelete) {
+            try {
+              await deleteMenu(confirmDelete._id);
+              setConfirmDelete(null);
+            } catch (error) {
+              alert(MESSAGES.ERROR_DELETE_MENU + error.message);
+            }
+          }
+        }}
+        onCancel={() => setConfirmDelete(null)}
+        title="Hapus Menu"
+        message={`Apakah Anda yakin ingin menghapus menu "${confirmDelete?.name}"?`}
+      />
     </div>
   );
 };

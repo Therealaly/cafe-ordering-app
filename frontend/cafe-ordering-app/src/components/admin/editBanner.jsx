@@ -1,29 +1,25 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState } from "react";
 import { Pen, Trash, Eye, EyeOff, Plus } from "lucide-react";
-import FormBanner from "../admin/form/formBanner"; 
+import FormBanner from "../admin/form/formBanner";
+import LoadingSkeleton from "../common/LoadingSkeleton";
+import ConfirmDialog from "../common/ConfirmDialog";
+import { useBanners } from "../../hooks/useBanners";
+import { MESSAGES } from "../../utils/constants";
 
 const EditBanner = () => {
-  const [banners, setBanners] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    banners,
+    loading,
+    createBanner,
+    updateBanner,
+    deleteBanner,
+    toggleBannerStatus,
+  } = useBanners();
 
   const [editingBanner, setEditingBanner] = useState(null);
   const [showForm, setShowForm] = useState(false);
-
-  const fetchBanners = async () => {
-    try {
-      const response = await axios.get("http://localhost:5000/api/promo");
-      setBanners(response.data);
-    } catch (error) {
-      console.error("Error fetching banners:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchBanners();
-  }, []);
+  const [confirmDelete, setConfirmDelete] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleEditBanner = (banner) => {
     setEditingBanner(banner);
@@ -35,67 +31,45 @@ const EditBanner = () => {
     setShowForm(true);
   };
 
-  const deleteBanner = async (id) => {
-    try {
-      await axios.delete(`http://localhost:5000/api/promo/${id}`, 
-      {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-      setBanners(banners.filter(banner => banner._id !== id));
-    } catch (error) {
-      console.error("Error deleting banner:", error);
-    }
-  }
-
-  const handleFormSubmit = async (data) => {
-    setLoading(true);
-    try {
-      if (editingBanner && editingBanner._id) {
-        // Edit
-        await axios.put(`http://localhost:5000/api/promo/${editingBanner._id}`, 
-          data,
-          {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            },
-          });
-      } else {
-        // New
-        await axios.post("http://localhost:5000/api/promo", 
-        data,
-        {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          }
-        });
-      }
-      // Refresh banners
-      fetchBanners();
-      setShowForm(false);
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
-    setLoading(false);
+  const handleDeleteClick = (banner) => {
+    setConfirmDelete(banner);
   };
 
-  const toggleBannerStatus = async (id, isActive) => {
-    try {
-      await axios.patch(`http://localhost:5000/api/promo/${id}`, { isActive: !isActive },
-        {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          },
-        }
-      );
-      setBanners(banners.map(banner => 
-        banner._id === id ? { ...banner, isActive: !isActive } : banner
-      ));
-    } catch (error) {
-      console.error("Error toggling banner status:", error);
+  const handleConfirmDelete = async () => {
+    if (confirmDelete) {
+      try {
+        await deleteBanner(confirmDelete._id);
+        setConfirmDelete(null);
+      } catch (error) {
+        alert('Gagal menghapus banner: ' + error.message);
+      }
     }
-  }
+  };
+
+  const handleFormSubmit = async (data) => {
+    setIsSubmitting(true);
+    try {
+      if (editingBanner && editingBanner._id) {
+        await updateBanner(editingBanner._id, data);
+      } else {
+        await createBanner(data);
+      }
+      setShowForm(false);
+      setEditingBanner(null);
+    } catch (error) {
+      alert('Gagal menyimpan banner: ' + error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleToggleStatus = async (id, isActive) => {
+    try {
+      await toggleBannerStatus(id, isActive);
+    } catch (error) {
+      alert('Gagal mengubah status banner: ' + error.message);
+    }
+  };
 
   return (
     <div className="w-full h-full flex flex-col p-4 md:p-6">
@@ -112,17 +86,17 @@ const EditBanner = () => {
         <FormBanner
           initialData={editingBanner || {}}
           onSubmit={handleFormSubmit}
-          onCancel={() => setShowForm(false)}
-          loading={loading}
+          onCancel={() => {
+            setShowForm(false);
+            setEditingBanner(null);
+          }}
+          loading={isSubmitting}
         />
       )}
-      {loading ? (
-        <div className="animate-pulse">
-          <div className="h-6 bg-gray-200 rounded w-1/3 mb-4"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/4 mb-2"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/5 mb-2"></div>
-        </div>
-      ) : (
+
+      {loading && !showForm ? (
+        <LoadingSkeleton rows={3} />
+      ) : !showForm && (
         <div className="overflow-x-auto">
           
           <table className="min-w-full bg-white border border-gray-200 rounded-lg text-black">
@@ -151,13 +125,10 @@ const EditBanner = () => {
                       <button className="rounded-sm bg-yellow-400 text-white p-1" onClick={() => handleEditBanner(banner)}>
                       <Pen/>
                       </button>
-                      <button  className="rounded-sm bg-red-800 text-white p-1" onClick={() => {
-                        if(window.confirm("Apakah yakin ingin menghapus banner ini?"))
-                          { deleteBanner(banner._id)}
-                      }}>
+                      <button  className="rounded-sm bg-red-800 text-white p-1" onClick={() => handleDeleteClick(banner)}>
                         <Trash />
                       </button>
-                      <button className="rounded-sm bg-blue-600 text-white p-1" onClick={() => toggleBannerStatus(banner._id, banner.isActive)}>
+                      <button className="rounded-sm bg-blue-600 text-white p-1" onClick={() => handleToggleStatus(banner._id, banner.isActive)}>
                         {banner.isActive ? <EyeOff /> : <Eye />}
                       </button>
                     </div>
@@ -168,6 +139,16 @@ const EditBanner = () => {
           </table>
         </div>
       )}
+
+      <ConfirmDialog
+        isOpen={!!confirmDelete}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setConfirmDelete(null)}
+        title="Hapus Banner"
+        message={MESSAGES.CONFIRM_DELETE_BANNER}
+        confirmText="Hapus"
+        cancelText="Batal"
+      />
     </div>
   );
 }

@@ -1,47 +1,17 @@
-import { useState } from "react";
-import axios from "axios";
-import {useNavigate } from "react-router-dom";
+import { useRegisterForm } from "../hooks/useRegisterForm";
+import FormInput from "../components/common/FormInput";
+import FormCheckbox from "../components/common/FormCheckbox";
+import AlertMessage from "../components/common/AlertMessage";
 
 const Register = () => {
-  const navigate = useNavigate();
-
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    agree: false,
-  });
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
-
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    if (form.password !== form.confirmPassword) {
-      alert("Password tidak sesuai");
-      return;
-    }
-    try {
-      const response = await axios.post("http://localhost:5000/api/auth/register", {
-        name: form.name,
-        email: form.email,
-        password: form.password,
-      });
-      console.log(response.data);
-
-      alert("Registrasi berhasil!");
-      navigate("/login");
-    } catch (error) {
-      const message = error.response?.data?.message || "Registrasi gagal. Harap coba lagi.";
-      alert(message);
-    }
-  }
+  const {
+    formData,
+    loading,
+    error,
+    handleInputChange,
+    handleRegister,
+    navigateToLogin
+  } = useRegisterForm();
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">

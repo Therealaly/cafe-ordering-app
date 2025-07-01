@@ -1,6 +1,7 @@
 import { SendHorizontal } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
+import ReactMarkdown from 'react-markdown';
 
 const ChatBot = () => {
   const [question, setQuestion] = useState('');
@@ -15,18 +16,18 @@ const ChatBot = () => {
     }
   }, [messages]);
 
-  //load chat history from localStorage when component mounts
+  //load chat history from sessionstorage when component mounts
   useEffect(() => {
-    const savedMessages = JSON.parse(localStorage.getItem('warnaBee_Chat'))
+    const savedMessages = JSON.parse(sessionStorage.getItem('warnaBee_Chat'))
     if (savedMessages) {
       setmessages(savedMessages);
     }
   }, []);
 
-  // save chat history to localStorage whenever messages changes
+  // save chat history to sessionStorage whenever messages changes
   useEffect(() => {
     if (messages.length > 0) {
-      localStorage.setItem('warnaBee_Chat', JSON.stringify(messages));
+      sessionStorage.setItem('warnaBee_Chat', JSON.stringify(messages));
     }
   }, [messages]);
 
@@ -69,7 +70,7 @@ const ChatBot = () => {
           <h1 className='text-xl font-semibold text-black'>WarnaBee &#x1F916;</h1>
           <p className="text-sm font-light text-center text-gray-800">Halo, saya WarnaBee! asisten virtual yang siap menjawab pertanyaan seputar Warna Kopi &#x1F600;</p>
         </div>
-        <div ref={chatContainerRef} className='border-t-2 border-b-2 border-gray-300 h-full overflow-auto p-2 bg-gray-200 flex flex-col gap-2'>
+        <div ref={chatContainerRef} className='border-t-2 border-b-2 border-gray-300 h-full overflow-auto p-2 bg-gray-200 flex flex-col gap-4'>
           { messages.length === 0 ? (
             <div className="text-center text-gray-500 mt-10">
               Mulai percakapan dengan WarnaBee...
@@ -79,12 +80,27 @@ const ChatBot = () => {
               <div 
                 key={index} 
                 className={`max-w-[75%] p-3 rounded-lg ${
-                  msg.sender === 'user' 
+                  msg.role === 'user' 
                     ? 'ml-auto bg-green-600 text-white' 
                     : 'mr-auto bg-white text-gray-800'
                 }`}
               >
-                <p className="whitespace-pre-wrap">{msg.text}</p>
+                {msg.role === 'user' ? (
+                  <p className="whitespace-pre-wrap">{msg.text}</p>
+                ) : (
+                  <div className="prose prose-sm max-w-none">
+                    <ReactMarkdown 
+                      components={{
+                        // Override paragraph styling to avoid margin issues
+                        p: (props) => <p className="my-1" {...props} />,
+                        // Ensure links open in new tab
+                        a: (props) => <a className="text-blue-600 underline" target="_blank" rel="noopener noreferrer" {...props} />
+                      }}
+                    >
+                      {msg.text}
+                    </ReactMarkdown>
+                  </div>
+                )}
               </div>
             ))
           )}

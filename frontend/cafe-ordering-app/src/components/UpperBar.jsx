@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom';
 import { ShoppingCart } from 'lucide-react';
 
 const UpperBar = () => {
-  const storedUser = localStorage.getItem("user");
+  const storedUser = sessionStorage.getItem("user");
   let userName = "Tamu";
 
   if (storedUser) {
@@ -10,7 +10,7 @@ const UpperBar = () => {
       const user = JSON.parse(storedUser);
       userName = user.name ?? "Tamu";
     } catch (e) {
-      console.error("Gagal parse user dari localStorage", e);
+      console.error("Gagal parse user dari sessionStorage", e);
     }
   }
 

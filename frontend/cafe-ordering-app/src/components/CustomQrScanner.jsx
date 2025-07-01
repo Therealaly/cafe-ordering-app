@@ -93,7 +93,7 @@ const CustomQrScanner = ({ onScanSuccess }) => {
             type="button"
             value="Takeaway"
             onClick={() => {
-              localStorage.setItem("tableNumber", "Takeaway");
+              sessionStorage.setItem("tableNumber", "Takeaway");
               navigate("/", { state: { tableNumber: "Takeaway" } });
             }}
           />

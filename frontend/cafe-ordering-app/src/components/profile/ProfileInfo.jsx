@@ -1,10 +1,8 @@
 import { CircleUserRound } from 'lucide-react';
-import { getUser } from '../../utils/auth';
+import { useAuth } from '../../hooks/useAuth';
 
 const ProfileInfo = () => {
-  const user = getUser();
-
-  const isUserValid = user && Object.keys(user).length > 0 && user.name && user.email;
+  const { user, isUserValid } = useAuth();
 
   if (!isUserValid) {
     return (

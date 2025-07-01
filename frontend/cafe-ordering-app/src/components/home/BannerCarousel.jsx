@@ -1,26 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Slider from "react-slick";
-import axios from "axios";
+import LoadingSkeleton from "../common/LoadingSkeleton";
+import { useActiveBanners } from "../../hooks/useActiveBanners";
 
 const BannerCarousel = () => {
-  const [banners, setBanners] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchBanners = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/api/promo");
-        const activeBanners = response.data.filter(banner => banner.isActive === true)
-        setBanners(activeBanners);
-      } catch (error) {
-        console.error("Error fetching banners:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBanners();
-  }, []);
+  const { banners, loading } = useActiveBanners();
 
   const settings = {
     dots: true,
@@ -37,19 +21,23 @@ const BannerCarousel = () => {
     <div className="w-full mb-7">
       {loading ? (
         <div className="w-full h-64 rounded-xl bg-gray-200 animate-pulse" />
-      ) : (
+      ) : banners.length > 0 ? (
         <Slider {...settings}>
           {banners.map((banner, index) => (
             <div key={index} className="w-full h-64 md:h-96">
               <img
                 src={banner.image}
-                alt={banner.alt}
+                alt={banner.title || `Banner ${index + 1}`}
                 className="w-full h-full object-cover object-center"
                 loading="lazy"
               />
             </div>
           ))}
         </Slider>
+      ) : (
+        <div className="w-full h-64 rounded-xl bg-gray-100 flex items-center justify-center">
+          <p className="text-gray-500">Tidak ada banner aktif</p>
+        </div>
       )}
     </div>
   );

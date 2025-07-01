@@ -4,7 +4,7 @@ import { LayoutDashboard, Coffee, Image, UserPen } from 'lucide-react';
 
 
 const SideMenu = () => {
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = JSON.parse(sessionStorage.getItem('user'));
 
   return (
     <div className="w-1/6 h-screen bg-gray-300 p-5 flex flex-col gap-5

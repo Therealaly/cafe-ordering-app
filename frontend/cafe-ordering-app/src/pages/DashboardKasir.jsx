@@ -18,7 +18,8 @@ const DashboardKasir = () => {
   }, [navigate]);
 
   const generateQrCode = async () => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
+
     if (!qrCode) return alert("Isi nomor meja terlebih dahulu");
 
     try {
@@ -41,7 +42,7 @@ const DashboardKasir = () => {
   // fetching orders from the backend
   const [orders, setOrders] = useState([]);
   const fetchOrders = async () => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     try {
       const response = await axios.get("http://localhost:5000/api/order/", {
         headers: {
@@ -60,7 +61,7 @@ const DashboardKasir = () => {
   }, []);
 
   const updateStatus = async(orderId, status) => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
     try {
       await axios.patch(`http://localhost:5000/api/order/${orderId}/status`, 
@@ -95,8 +96,8 @@ const DashboardKasir = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
     navigate("/login");
   }
 
@@ -142,10 +143,24 @@ const DashboardKasir = () => {
           </button>
         </div>
         <h2 className="text-lg font-semibold text-black mb-2">Pesanan Masuk</h2>
-        {orders.length === 0 ? (
+        {orders.length === 0 || !orders.some(order => {
+          const orderDate = new Date(order.createdAt);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          return orderDate.getFullYear() === today.getFullYear() &&
+                 orderDate.getMonth() === today.getMonth() &&
+                 orderDate.getDate() === today.getDate();
+        }) ? (
           <p className="text-gray-500">Belum ada pesanan masuk.</p>
         ) : (
-          orders.map((order) => {
+          orders.filter(order => {
+            const orderDate = new Date(order.createdAt);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return orderDate.getFullYear() === today.getFullYear() &&
+                  orderDate.getMonth() === today.getMonth() &&
+                  orderDate.getDate() === today.getDate();
+          }).map((order) => {
             const status = statusMap[order.status] || {
               icon: <ClockFading className="text-gray-400" />,
               color: "text-gray-400",

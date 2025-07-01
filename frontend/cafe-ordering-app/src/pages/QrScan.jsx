@@ -20,12 +20,12 @@ const QrScan = () => {
       const res = await axios.post("http://localhost:5000/api/qrcode/validate", 
         { tableNumber, token },
         { headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
           }
         }
       );
       if (res.data.valid) {
-        localStorage.setItem("tableNumber", tableNumber);
+        sessionStorage.setItem("tableNumber", tableNumber);
         navigate("/");
       } else {
         alert("Kode QR tidak valid.");

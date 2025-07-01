@@ -9,7 +9,7 @@ const verifyKasir = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);
 
-    if (!user || user.role !== 'kasir' || user.role !== 'admin') {
+    if (!user || !['kasir', 'admin'].includes(user.role)) {
       return res.status(403).json({ message: "Akses ditolak: bukan kasir" });
     }
 

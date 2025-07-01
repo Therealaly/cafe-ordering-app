@@ -11,10 +11,10 @@ const DashboardAdmin = () => {
   const navigate = useNavigate();
 
    const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("cart");
-    localStorage.removeItem("tableNumber");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("cart");
+    sessionStorage.removeItem("tableNumber");
     navigate("/login"); // Redirect to login page
   }
 

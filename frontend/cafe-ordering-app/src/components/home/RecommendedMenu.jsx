@@ -1,34 +1,10 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import LoadingSkeleton from "../common/LoadingSkeleton";
+import { useRecommendations } from "../../hooks/useRecommendations";
+import { getUser } from "../../utils/auth";
 
 const RecommendedMenu = ({ onSelect }) => {
-  const [recommended, setRecommended] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect (() => {
-    const token = localStorage.getItem("token");
-    const userData = localStorage.getItem("user");
-
-    if (!token || !userData) {
-      setLoading(false);
-      return;
-    }
-
-    const user = JSON.parse(userData);
-
-    axios.get(`http://localhost:5000/api/recommendation/${user.id}`, 
-      { headers: {
-        Authorization: `Bearer ${token}`
-      }}
-    ) 
-    .then(response => {
-      setRecommended(response.data);
-    })
-    .catch(error =>{
-      console.error("Error fetching recommended menu:", error);
-    })
-    .finally(() => setLoading(false));
-  }, []);
+  const user = getUser();
+  const { recommendations, loading } = useRecommendations(user?.id);
     
   return (
     <div className="flex flex-col space-y-2 h-fit">
@@ -54,7 +30,7 @@ const RecommendedMenu = ({ onSelect }) => {
                   <div className="h-4 w-20 bg-gray-200 rounded" />
                 </div>
               ))
-            : recommended.map(item => (
+            : recommendations.map(item => (
                 <div 
                   key={item._id} 
                   onClick={() => onSelect(item)}
