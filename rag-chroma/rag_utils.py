@@ -3,23 +3,184 @@ import chromadb
 import os
 from dotenv import load_dotenv
 from chromadb.utils import embedding_functions
+import re
 
-
-# --- (Keep your ChromaDB client and embedding function initialization here) ---
+# Initialize ChromaDB
 load_dotenv()
 client = chromadb.Client()
 gemini_ef = embedding_functions.GoogleGenerativeAiEmbeddingFunction(api_key=os.getenv("GEMINI_API_KEY"))
 collection = client.get_or_create_collection(name="menu_warna_kopi", embedding_function=gemini_ef)
 
+def extract_price_range(price_hot, price_ice):
+    # """Categorize price range for filtering"""
+    prices = [p for p in [price_hot, price_ice] if p != -1 and p is not None]
+    if not prices:
+        return "unknown"
+    
+    max_price = max(prices)
+    if max_price <= 15000:
+        return "budget"
+    elif max_price <= 25000:
+        return "moderate"
+    else:
+        return "premium"
+
+def extract_dietary_tags(dietary_info):
+    # """Extract dietary restriction tags"""
+    tags = []
+    if dietary_info.get("vegetarian", False):
+        tags.append("vegetarian")
+    if dietary_info.get("vegan", False):
+        tags.append("vegan")
+    if dietary_info.get("gluten_free", False):
+        tags.append("gluten_free")
+    if dietary_info.get("dairy_free", False):
+        tags.append("dairy_free")
+    if dietary_info.get("nuts_free", False):
+        tags.append("nuts_free")
+    if dietary_info.get("halal", False):
+        tags.append("halal")
+    return tags
+
+def build_enhanced_document(item, category_name, price_str):
+    # """Build comprehensive document text for better semantic search"""
+    
+    # Basic info
+    name = item.get("name", "")
+    description = item.get("description", "")
+    composition = item.get("composition", "")
+    
+    # Enhanced fields
+    tags = item.get("tags", [])
+    dietary_info = item.get("dietary_info", {})
+    allergens = item.get("allergens", [])
+    caffeine_level = item.get("caffeine_level", "")
+    sweetness_level = item.get("sweetness_level", "")
+    preparation_time = item.get("preparation_time", "")
+    customization = item.get("customization", {})
+    pairing_suggestions = item.get("pairing_suggestions", [])
+    origin = item.get("origin", "")
+    brewing_method = item.get("brewing_method", "")
+    
+    # Build comprehensive document
+    document_parts = [
+        f"Menu Item: {name}",
+        f"Category: {category_name}",
+        f"Pricing: {price_str}",
+        f"Description: {description}",
+        f"Ingredients: {composition}",
+    ]
+    
+    if tags:
+        document_parts.append(f"Tags: {', '.join(tags)}")
+    
+    if caffeine_level:
+        document_parts.append(f"Caffeine Level: {caffeine_level}")
+    
+    if sweetness_level:
+        document_parts.append(f"Sweetness: {sweetness_level}")
+    
+    if preparation_time:
+        document_parts.append(f"Preparation Time: {preparation_time}")
+    
+    # Dietary information
+    dietary_tags = extract_dietary_tags(dietary_info)
+    if dietary_tags:
+        document_parts.append(f"Dietary Options: {', '.join(dietary_tags)}")
+    
+    if allergens:
+        document_parts.append(f"Allergens: {', '.join(allergens)}")
+    
+    # Customization options
+    if customization.get("available", False):
+        options = customization.get("options", [])
+        if options:
+            document_parts.append(f"Customization Available: {', '.join(options)}")
+    
+    # Pairing suggestions
+    if pairing_suggestions:
+        document_parts.append(f"Goes well with: {', '.join(pairing_suggestions)}")
+    
+    # Origin and brewing method
+    if origin:
+        document_parts.append(f"Origin: {origin}")
+    
+    if brewing_method:
+        document_parts.append(f"Brewing Method: {brewing_method}")
+    
+    return "\n".join(document_parts)
+
+def build_enhanced_metadata(item, category_name, price_hot, price_ice):
+    # """Build comprehensive metadata for filtering and analysis"""
+    
+    base_metadata = {
+        "nama": item.get("name", ""),
+        "kategori": category_name,
+        "deskripsi": item.get("description", ""),
+        "komposisi": item.get("composition", ""),
+        "harga_hot": price_hot,
+        "harga_ice": price_ice,
+    }
+    
+    # Enhanced metadata
+    enhanced_metadata = {
+        # Price categorization
+        "price_range": extract_price_range(price_hot, price_ice),
+        
+        # Tags and categories
+        "tags": ", ".join(item.get("tags", [])),
+        "dietary_tags": ", ".join(extract_dietary_tags(item.get("dietary_info", {}))),
+        "allergens": ", ".join(item.get("allergens", [])),
+        
+        # Drink characteristics
+        "caffeine_level": item.get("caffeine_level", ""),
+        "sweetness_level": item.get("sweetness_level", ""),
+        "temperature_options": ", ".join(item.get("temperature_options", [])),
+        
+        # Service info
+        "preparation_time": item.get("preparation_time", ""),
+        "serving_size": item.get("serving_size", ""),
+        "customization_available": item.get("customization", {}).get("available", False),
+        
+        # Popularity and recommendations
+        "seasonal": item.get("seasonal", False),
+        
+        # Pairing and origin
+        "pairing_suggestions": ", ".join(item.get("pairing_suggestions", [])),
+        "origin": item.get("origin", ""),
+        "brewing_method": item.get("brewing_method", ""),
+        "bean_origin": item.get("bean_origin", ""),
+        "roast_level": item.get("roast_level", ""),
+        
+        # Categorization helpers
+        "is_beverage": category_name.lower() not in ["nyamikan + maeman"],
+        "is_food": category_name.lower() == "nyamikan + maeman",
+        "is_coffee": any(coffee_word in item.get("name", "").lower() or 
+                        coffee_word in item.get("composition", "").lower() 
+                        for coffee_word in ["espresso", "kopi", "coffee", "americano", "latte", "cappuccino"]),
+        "has_milk": any(milk_word in item.get("composition", "").lower() 
+                       for milk_word in ["susu", "milk", "creamer", "foam"]),
+        "has_ice_option": price_ice != -1 and price_ice is not None,
+        "has_hot_option": price_hot != -1 and price_hot is not None,
+    }
+    
+    return {**base_metadata, **enhanced_metadata}
+
 def index_menu():
+    """Enhanced menu indexing with comprehensive metadata"""
     global collection
     
-    client.delete_collection(name="menu_warna_kopi")
-    print("Previous collection data cleared.")  
-
+    # Recreate collection
+    try:
+        client.delete_collection(name="menu_warna_kopi")
+        print("Previous collection data cleared.")
+    except:
+        pass
+    
     collection = client.create_collection(name="menu_warna_kopi", embedding_function=gemini_ef)
-    print("collection recreated.")
+    print("Collection recreated.")
 
+    # Load menu data
     with open('menu.json', 'r', encoding='utf-8') as f:
         menu_data = json.load(f)
 
@@ -30,84 +191,158 @@ def index_menu():
     for category_data in menu_data:
         category_name = category_data.get("category", "Tanpa Kategori")
 
-        for item in category_data.get("items", []):
+        for item in category_data.get("items", []): #item ditambahkan
             name = item.get("name", "")
-            description = item.get("description", "")
-            composition = item.get("composition", "")
+            if not name:
+                continue
             
-            # Initialize prices as None
+            # Process pricing
             price_hot = None
             price_ice = None
-
-            # Get the price value from the item
             price_value = item.get("price")
 
-            # Case 1: Price is a dictionary (e.g., {"hot": 18000, "ice": 20000})
             if isinstance(price_value, dict):
                 price_hot = price_value.get("hot")
                 price_ice = price_value.get("ice")
-            
-            # Case 2: Price is a single number (e.g., 18000)
             elif isinstance(price_value, (int, float)):
-                # We'll assign the single price to 'hot' and leave 'ice' as None.
-                # You can change this convention if needed.
                 price_hot = price_value
                 price_ice = None
 
+            # Handle None values
             if price_hot is None:
                 price_hot = -1
             if price_ice is None:
                 price_ice = -1
-            
-            # Case 3 (price is null, missing, or another type) is handled by the initial None values.
-            # Create a FLAT metadata object for ChromaDB
-            metadata_for_chroma = {
-                "nama": name,
-                "kategori": category_name,
-                "deskripsi": description,
-                "komposisi": composition,
-                "harga_hot": price_hot,
-                "harga_ice": price_ice
-            }
 
+            # Build price string
             if price_hot != -1 and price_ice != -1:
-                price_str = f"Harga: Hot Rp{price_hot}, Ice Rp{price_ice}"
+                price_str = f"Hot: Rp{price_hot:,}, Ice: Rp{price_ice:,}"
             elif price_hot != -1:
-                price_str = f"Harga: Hot Rp{price_hot}"
+                price_str = f"Hot: Rp{price_hot:,}"
             elif price_ice != -1:
-                price_str = f"Harga: Ice Rp{price_ice}"
+                price_str = f"Ice: Rp{price_ice:,}"
             else:
-                price_str = "Harga: Tidak tersedia"
+                price_str = "Price not available"
 
-            document_text = (
-                f"Nama: {name}. Kategori: {category_name}. {price_str}. "
-                f"Deskripsi: {description}. Komposisi: {composition}."
-            )
-            item_id = f"item_{name.replace(' ', '_').lower()}"
+            # Build enhanced document and metadata
+            document_text = build_enhanced_document(item, category_name, price_str)
+            metadata = build_enhanced_metadata(item, category_name, price_hot, price_ice)
+            item_id = f"item_{name.replace(' ', '_').replace('/', '_').lower()}"
 
             documents_to_add.append(document_text)
-            metadatas_to_add.append(metadata_for_chroma)
+            metadatas_to_add.append(metadata)
             ids_to_add.append(item_id)
-
+    
     if documents_to_add:
         collection.add(
             documents=documents_to_add,
             metadatas=metadatas_to_add,
             ids=ids_to_add
         )
-        print(f"Successfully indexed {len(documents_to_add)} menu items.")
+        print(f"Successfully indexed {len(documents_to_add)} menu items with enhanced metadata.")
     else:
         print("No items found to index.")
 
-def query_menu(question, top_k=3):
-
-    results = collection.query(
-        query_texts=[question],
-        n_results=top_k
-    )
-
-    return {
-        "context": results["documents"][0],
-        "metadata": results["metadatas"][0]
+def preprocess_query(question):
+    synonyms = {
+        "coffee": ["kopi", "espresso", "americano", "cappuccino", "latte", "mocha"],
+        "cold": ["dingin", "ice", "es", "iced"],
+        "hot": ["panas", "hangat", "warm"],
+        "cheap": ["murah", "budget", "affordable", "ekonomis"],
+        "expensive": ["mahal", "premium", "eksklusif"],
+        "sweet": ["manis", "gula", "sugar"],
+        "bitter": ["pahit", "kuat", "strong"],
+        "milk": ["susu", "creamy", "lembut"],
+        "food": ["makanan", "makan", "snack", "cemilan"],
+        "drink": ["minuman", "minum", "beverage"],
+        "vegetarian": ["vegetarian", "sayur", "nabati"],
+        "halal": ["halal", "islami"],
+        "spicy": ["pedas", "hot", "spicy"],
+        "recommend": ["rekomen", "suggest", "bagus", "enak", "favorit"]
     }
 
+    enhanced_query = question.lower()
+    for key, values in synonyms.items():
+        if key in enhanced_query:
+            enhanced_query += " " + " ".join(values)
+
+    return enhanced_query
+
+def build_filter_criteria(question):
+    question_lower = question.lower()
+    filters={}
+
+    # price filter
+    if any(word in question_lower for word in ["murah", "budget", "ekonomis", "cheap", "affordable"]):
+        filters["price_range"] = "budget"
+    elif any(word in question_lower for word in ["mahal", "premium", "eksklusif", "expensive"]):
+        filters["price_range"] = "premium"
+
+    # Dietary filters
+    if any(word in question_lower for word in ["vegetarian", "nabati"]):
+        filters["dietary_tags"] = {"$contains": "vegetarian"}
+    if any(word in question_lower for word in ["vegan"]):
+        filters["dietary_tags"] = {"$contains": "vegan"}
+    if any(word in question_lower for word in ["halal"]):
+        filters["dietary_tags"] = {"$contains": "halal"}
+    
+    # Temperature filters
+    if any(word in question_lower for word in ["dingin", "cold", "ice", "es"]):
+        filters["has_ice_option"] = True
+    if any(word in question_lower for word in ["panas", "hot", "hangat"]):
+        filters["has_hot_option"] = True
+    
+    # Category filters
+    if any(word in question_lower for word in ["makanan", "food", "makan"]):
+        filters["is_food"] = True
+    if any(word in question_lower for word in ["minuman", "drink", "minum"]):
+        filters["is_beverage"] = True
+    if any(word in question_lower for word in ["kopi", "coffee"]):
+        filters["is_coffee"] = True
+
+    return filters if filters else None
+
+def query_menu(question, top_k=5):
+    """Enhanced query function with preprocessing and filtering"""
+    
+    # Preprocess query
+    processed_question = preprocess_query(question)
+    
+    # Build filter criteria
+    filter_criteria = build_filter_criteria(question)
+    
+    # Query with filters
+    try:
+        results = collection.query(
+            query_texts=[processed_question],
+            n_results=top_k,
+            where=filter_criteria,
+            include=["documents", "metadatas"]
+        )
+        
+        # If no results with filters, try without filters
+        if not results["documents"][0] and filter_criteria:
+            results = collection.query(
+                query_texts=[processed_question],
+                n_results=top_k,
+                include=["documents", "metadatas"]
+            )
+    except Exception as e:
+        print(f"Error querying with filters: {e}")
+        # Fallback to basic query
+        results = collection.query(
+            query_texts=[processed_question],
+            n_results=top_k,
+            include=["documents", "metadatas"]
+        )
+    
+    return {
+        "context": results["documents"][0],
+        "metadata": results["metadatas"][0],
+        "query_analysis": {
+            "original_query": question,
+            "processed_query": processed_question,
+            "filters_applied": filter_criteria,
+            "results_count": len(results["documents"][0])
+        }
+    }
