@@ -244,27 +244,100 @@ def index_menu():
         print("No items found to index.")
 
 def preprocess_query(question):
+    # Bidirectional synonyms - both directions work
     synonyms = {
+        # Coffee terms (Indonesian -> English & English -> Indonesian)
+        "kopi": ["coffee", "espresso", "americano", "cappuccino", "latte", "mocha", "arabica", "robusta"],
         "coffee": ["kopi", "espresso", "americano", "cappuccino", "latte", "mocha"],
-        "cold": ["dingin", "ice", "es", "iced"],
+        "espresso": ["kopi", "coffee", "shot", "arabica"],
+        "americano": ["kopi", "coffee", "hitam", "black"],
+        "cappuccino": ["kopi", "coffee", "susu", "foam", "creamy"],
+        "latte": ["kopi", "coffee", "susu", "milk", "creamy"],
+        "mocha": ["kopi", "coffee", "cokelat", "chocolate"],
+        
+        # Temperature (Indonesian -> English & English -> Indonesian)
+        "dingin": ["cold", "ice", "es", "iced", "sejuk", "segar"],
+        "cold": ["dingin", "ice", "es", "iced", "sejuk"],
+        "es": ["ice", "cold", "dingin", "iced", "sejuk"],
+        "ice": ["es", "cold", "dingin", "iced"],
+        "panas": ["hot", "hangat", "warm"],
         "hot": ["panas", "hangat", "warm"],
+        "hangat": ["warm", "hot", "panas"],
+        
+        # Price (Indonesian -> English & English -> Indonesian)
+        "murah": ["cheap", "budget", "affordable", "ekonomis", "terjangkau"],
         "cheap": ["murah", "budget", "affordable", "ekonomis"],
+        "budget": ["murah", "cheap", "affordable", "ekonomis"],
+        "mahal": ["expensive", "premium", "eksklusif"],
         "expensive": ["mahal", "premium", "eksklusif"],
-        "sweet": ["manis", "gula", "sugar"],
+        "premium": ["mahal", "expensive", "eksklusif", "mewah"],
+        
+        # Taste (Indonesian -> English & English -> Indonesian)
+        "manis": ["sweet", "gula", "sugar", "legi"],
+        "sweet": ["manis", "gula", "sugar", "legi"],
+        "pahit": ["bitter", "kuat", "strong", "pekat"],
         "bitter": ["pahit", "kuat", "strong"],
+        "kuat": ["strong", "pahit", "bitter", "pekat"],
+        "strong": ["kuat", "pahit", "bitter"],
+        
+        # Texture/Type (Indonesian -> English & English -> Indonesian)
+        "susu": ["milk", "creamy", "lembut", "foam"],
         "milk": ["susu", "creamy", "lembut"],
+        "creamy": ["susu", "milk", "lembut", "halus"],
+        "lembut": ["smooth", "creamy", "soft", "halus"],
+        
+        # Food/Drink (Indonesian -> English & English -> Indonesian)
+        "makanan": ["food", "makan", "snack", "cemilan"],
         "food": ["makanan", "makan", "snack", "cemilan"],
+        "makan": ["eat", "food", "makanan", "meal"],
+        "minuman": ["drink", "minum", "beverage"],
         "drink": ["minuman", "minum", "beverage"],
-        "vegetarian": ["vegetarian", "sayur", "nabati"],
-        "halal": ["halal", "islami"],
-        "spicy": ["pedas", "hot", "spicy"],
-        "recommend": ["rekomen", "suggest", "bagus", "enak", "favorit"]
+        "minum": ["drink", "minuman", "beverage"],
+        
+        # Dietary (Indonesian -> English & English -> Indonesian)
+        "vegetarian": ["nabati", "sayur", "sayuran"],
+        "nabati": ["vegetarian", "plant-based", "sayur"],
+        "halal": ["islami", "syariah"],
+        "vegan": ["nabati", "tanpa-hewani"],
+        
+        # Spicy (Indonesian -> English & English -> Indonesian)
+        "pedas": ["spicy", "hot", "panas"],
+        "spicy": ["pedas", "hot", "panas"],
+        
+        # Recommendations (Indonesian -> English & English -> Indonesian)
+        "rekomen": ["recommend", "suggest", "bagus", "enak", "favorit", "populer"],
+        "recommend": ["rekomen", "suggest", "bagus", "enak", "saran"],
+        "enak": ["tasty", "delicious", "bagus", "lezat", "nikmat"],
+        "bagus": ["good", "nice", "enak", "recommend"],
+        "favorit": ["favorite", "popular", "populer", "pilihan"],
+        "populer": ["popular", "favorite", "favorit", "terkenal"],
+        
+        # Additional Indonesian specific terms
+        "segar": ["fresh", "refreshing", "dingin", "sejuk"],
+        "gurih": ["savory", "salty", "asin"],
+        "kenyang": ["filling", "full", "satisfying"],
+        "ringan": ["light", "simple", "mudah"],
+        "berat": ["heavy", "filling", "kenyang"],
+        "tradisional": ["traditional", "klasik", "asli"],
+        "modern": ["contemporary", "new", "baru"],
+        "unik": ["unique", "special", "istimewa"],
+        
+        # Occasions (Indonesian terms)
+        "sarapan": ["breakfast", "pagi", "morning"],
+        "siang": ["lunch", "afternoon", "tengah-hari"],
+        "sore": ["afternoon", "evening", "petang"],
+        "malam": ["night", "evening", "dinner"],
     }
 
     enhanced_query = question.lower()
-    for key, values in synonyms.items():
-        if key in enhanced_query:
-            enhanced_query += " " + " ".join(values)
+    words_in_question = enhanced_query.split()
+
+    for word in words_in_question:
+        clean_word = word.strip('.,!?()[]{};:"\'\"') 
+    
+        if clean_word in synonyms:
+            related_terms = synonyms[clean_word]
+            enhanced_query += " " + " ".join(related_terms)
 
     return enhanced_query
 
@@ -273,9 +346,9 @@ def build_filter_criteria(question):
     filters={}
 
     # price filter
-    if any(word in question_lower for word in ["murah", "budget", "ekonomis", "cheap", "affordable"]):
+    if any(word in question_lower for word in ["murah", "budget", "ekonomis", "cheap", "affordable", "ekonomis"]):
         filters["price_range"] = "budget"
-    elif any(word in question_lower for word in ["mahal", "premium", "eksklusif", "expensive"]):
+    elif any(word in question_lower for word in ["mahal", "premium", "eksklusif", "expensive", "high-end"]):
         filters["price_range"] = "premium"
 
     # Dietary filters
@@ -287,17 +360,17 @@ def build_filter_criteria(question):
         filters["dietary_tags"] = {"$contains": "halal"}
     
     # Temperature filters
-    if any(word in question_lower for word in ["dingin", "cold", "ice", "es"]):
+    if any(word in question_lower for word in ["dingin", "cold", "ice", "es", "iced"]):
         filters["has_ice_option"] = True
-    if any(word in question_lower for word in ["panas", "hot", "hangat"]):
+    if any(word in question_lower for word in ["panas", "hot", "hangat", "warm"]):
         filters["has_hot_option"] = True
     
     # Category filters
-    if any(word in question_lower for word in ["makanan", "food", "makan"]):
+    if any(word in question_lower for word in ["makanan", "food", "makan", "snack", "cemilan"]):
         filters["is_food"] = True
-    if any(word in question_lower for word in ["minuman", "drink", "minum"]):
+    if any(word in question_lower for word in ["minuman", "drink", "minum", "beverage"]):
         filters["is_beverage"] = True
-    if any(word in question_lower for word in ["kopi", "coffee"]):
+    if any(word in question_lower for word in ["kopi", "coffee", "espresso", "americano", "cappuccino", "latte", "mocha"]):
         filters["is_coffee"] = True
 
     return filters if filters else None
