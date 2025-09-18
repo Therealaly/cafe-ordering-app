@@ -65,7 +65,7 @@
         "seasonal": false,
         "ingredients": ["arabica coffee beans", "water", "ice"],
         "pairing_suggestions": ["pastries", "light snacks", "cookies"],
-        "origin": "American adaptation",
+        "origin": "America",
         "brewing_method": "espresso machine",
         "bean_origin": "arabica blend",
         "roast_level": "medium to dark"
@@ -167,7 +167,7 @@
         "seasonal": false,
         "ingredients": ["arabica coffee beans", "fresh milk", "dark chocolate", "ice"],
         "pairing_suggestions": ["pastries", "cookies", "chocolate desserts"],
-        "origin": "American adaptation",
+        "origin": "America",
         "brewing_method": "espresso machine",
         "bean_origin": "arabica blend",
         "roast_level": "medium to dark"
@@ -237,7 +237,7 @@
         "seasonal": false,
         "ingredients": ["fresh fruits", "UHT milk", "simple syrup", "vanilla ice cream", "ice"],
         "pairing_suggestions": ["light snacks", "cookies", "pastries"],
-        "origin": "American",
+        "origin": "America",
         "brewing_method": "blender",
         "bean_origin": "N/A",
         "roast_level": "N/A"
@@ -373,7 +373,7 @@
         "seasonal": false,
         "ingredients": ["jasmine tea", "water", "simple syrup", "ice"],
         "pairing_suggestions": ["cookies", "light snacks", "traditional sweets"],
-        "origin": "Asian",
+        "origin": "asia",
         "brewing_method": "steeping",
         "bean_origin": "jasmine tea leaves",
         "roast_level": "N/A"
@@ -407,7 +407,7 @@
         "seasonal": false,
         "ingredients": ["jasmine tea", "lemon syrup", "fresh lemon", "simple syrup", "ice"],
         "pairing_suggestions": ["light meals", "cookies", "finger foods", "main courses"],
-        "origin": "Asian fusion",
+        "origin": "asia",
         "brewing_method": "shaking",
         "bean_origin": "jasmine tea leaves",
         "roast_level": "N/A"
@@ -440,8 +440,8 @@
         },
         "seasonal": false,
         "ingredients": ["jasmine tea", "lychee fruit", "lychee syrup", "simple syrup", "ice"],
-        "pairing_suggestions": ["asian desserts", "light snacks", "tropical fruits", "main courses"],
-        "origin": "Asian",
+        "pairing_suggestions": ["asia desserts", "light snacks", "tropical fruits", "main courses"],
+        "origin": "asia",
         "brewing_method": "shaking",
         "bean_origin": "jasmine tea leaves",
         "roast_level": "N/A"
@@ -475,7 +475,7 @@
         "seasonal": false,
         "ingredients": ["chocolate powder", "peppermint syrup", "vanilla ice cream"],
         "pairing_suggestions": ["cookies", "brownies", "mint desserts"],
-        "origin": "American",
+        "origin": "America",
         "brewing_method": "mixing",
         "bean_origin": "N/A",
         "roast_level": "N/A"
@@ -650,7 +650,7 @@
     "category": "Kopi Suka-Suka",
     "items": [
       {
-        "name": "Aren",
+        "name": "kopi susu Aren",
         "price": {
           "hot": null,
           "ice": 22000
@@ -684,7 +684,7 @@
         "roast_level": "medium to dark"
       },
       {
-        "name": "Karamel",
+        "name": "kopi susu Karamel",
         "price": {
           "hot": null,
           "ice": 22000
@@ -718,7 +718,7 @@
         "roast_level": "medium to dark"
       },
       {
-        "name": "Djowo",
+        "name": "kopi susu Djowo",
         "price": {
           "hot": null,
           "ice": 22000
@@ -752,7 +752,7 @@
         "roast_level": "medium to dark"
       },
       {
-        "name": "Legi",
+        "name": "kopi susu Legi",
         "price": {
           "hot": null,
           "ice": 22000
@@ -923,7 +923,7 @@
         "seasonal": false,
         "ingredients": ["various snack ingredients", "flour", "vegetables", "spices"],
         "pairing_suggestions": ["tea", "juice", "coffee", "cold drinks"],
-        "origin": "Indonesian street food",
+        "origin": "Indonesia",
         "brewing_method": "N/A",
         "bean_origin": "N/A",
         "roast_level": "N/A"
@@ -1140,7 +1140,7 @@
         "seasonal": false,
         "ingredients": ["instant noodles", "black pepper", "vegetables", "eggs", "sausage", "soy sauce"],
         "pairing_suggestions": ["cold drinks", "tea", "iced coffee"],
-        "origin": "Indonesian fusion",
+        "origin": "Indonesia",
         "brewing_method": "N/A",
         "bean_origin": "N/A",
         "roast_level": "N/A"
@@ -1171,7 +1171,7 @@
         "seasonal": false,
         "ingredients": ["rice", "eggs", "sausage", "vegetables", "soy sauce", "spices"],
         "pairing_suggestions": ["cold drinks", "tea", "iced coffee", "pickles"],
-        "origin": "Indonesian",
+        "origin": "Indonesia",
         "brewing_method": "N/A",
         "bean_origin": "N/A",
         "roast_level": "N/A"

@@ -6,12 +6,10 @@ const CustomQrScanner = ({ onScanSuccess }) => {
   const scannerRef = useRef(null);
   const [scanning, setScanning] = useState(false);
   const navigate = useNavigate();
-
   const startCameraScan = async () => {
     const scanner = new Html5Qrcode("qr-reader");
     scannerRef.current = scanner;
     setScanning(true);
-
     try {
       const devices = await Html5Qrcode.getCameras();
       if (devices && devices.length) {
@@ -27,9 +25,7 @@ const CustomQrScanner = ({ onScanSuccess }) => {
             onScanSuccess(decodedText);
             stopScanner(); // stop after success
           },
-          () => {
-
-          }
+          () => {}
         );
       }
     } catch (err) {

@@ -24,3 +24,6 @@ Thumbs.db
 *.swp
 *.pyc
 *.cfg
+
+venv/
+__pycache__/

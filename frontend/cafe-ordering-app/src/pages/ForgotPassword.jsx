@@ -37,11 +37,9 @@ const ForgotPassword = () => {
         <p className="px-4 text-sm text-gray-600 mb-4 text-center">
           Don't worry! Enter your email below and we'll send you a link to reset your password.
         </p>
-        
         {success && <AlertMessage message={success} type="success" />}
         {error && <AlertMessage message={error} type="error" />}
-
-        {!success && ( // Hide form if success message is shown
+        {!success && (
           <form onSubmit={handleSubmit}>
             <FormInput
               type="email"
@@ -50,7 +48,6 @@ const ForgotPassword = () => {
               onChange={handleEmailChange}
               disabled={loading}
             />
-            
             <div className="flex px-4 py-3 mt-2">
               <button
                 type="submit"

@@ -2,6 +2,8 @@ import { useRegisterForm } from "../hooks/useRegisterForm";
 import FormInput from "../components/common/FormInput";
 import FormCheckbox from "../components/common/FormCheckbox";
 import AlertMessage from "../components/common/AlertMessage";
+import { useState } from "react";
+import { Eye, EyeOff } from 'lucide-react';
 
 const Register = () => {
   const {
@@ -13,12 +15,25 @@ const Register = () => {
     navigateToLogin
   } = useRegisterForm();
 
+  // Add state for password visibility
+  const [showPasswordA, setShowPasswordA] = useState(false);
+  const [showPasswordB, setShowPasswordB] = useState(false);
+
+  // Toggle password visibility
+  const togglePasswordVisibilityA = () => {
+    setShowPasswordA(!showPasswordA);
+  };
+
+  const togglePasswordVisibilityB = () => {
+    setShowPasswordB(!showPasswordB);
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <div
         className="w-full flex-shrink-0 bg-center bg-no-repeat bg-cover"
         style={{
-          height: "40vh",
+          height: "35vh",
           backgroundImage:
             'url("https://ik.imagekit.io/k9csxbksz/Reservasi%20wk.jpg?updatedAt=1748360416867")'
         }}
@@ -51,20 +66,45 @@ const Register = () => {
             value={formData.email}
             onChange={(value) => handleInputChange('email', value)}
           />
-          
-          <FormInput
-            type="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={(value) => handleInputChange('password', value)}
-          />
-          
-          <FormInput
-            type="password"
-            placeholder="Confirm Password"
-            value={formData.confirmPassword}
-            onChange={(value) => handleInputChange('confirmPassword', value)}
-          />
+          <div className="relative">
+            <FormInput
+               type={showPasswordA ? "text" : "password"}
+              placeholder="Password"
+              value={formData.password}
+              onChange={(value) => handleInputChange('password', value)}
+            />
+            <button
+              type="button"
+              onClick={togglePasswordVisibilityA}
+              className="absolute right-7 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+            >
+              {showPasswordA ? (
+                <EyeOff className="h-5 w-5" />
+              ) : (
+                <Eye className="h-5 w-5" />
+              )}
+            </button>
+          </div>
+
+          <div className="relative">
+            <FormInput
+              type={showPasswordB ? "text" : "password"}
+              placeholder="Confirm Password"
+              value={formData.confirmPassword}
+              onChange={(value) => handleInputChange('confirmPassword', value)}
+            /> 
+            <button
+              type="button"
+              onClick={togglePasswordVisibilityB}
+              className="absolute right-7 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+            >
+              {showPasswordB ? (
+                <EyeOff className="h-5 w-5" />
+              ) : (
+                <Eye className="h-5 w-5" />
+              )}
+            </button>
+          </div>
           
           <FormCheckbox
             checked={formData.agree}

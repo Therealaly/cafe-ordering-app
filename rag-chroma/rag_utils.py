@@ -124,39 +124,26 @@ def build_enhanced_metadata(item, category_name, price_hot, price_ice):
     
     # Enhanced metadata
     enhanced_metadata = {
-        # Price categorization
-        "price_range": extract_price_range(price_hot, price_ice),
-        
-        # Tags and categories
-        "tags": ", ".join(item.get("tags", [])),
+        "price_range": extract_price_range(price_hot, price_ice),  # "budget", "moderate", "premium"
+   
         "dietary_tags": ", ".join(extract_dietary_tags(item.get("dietary_info", {}))),
-        "allergens": ", ".join(item.get("allergens", [])),
+        "allergens": ", ".join(item.get("allergens", [])) if item.get("allergens") else "",
         
-        # Drink characteristics
-        "caffeine_level": item.get("caffeine_level", ""),
-        "sweetness_level": item.get("sweetness_level", ""),
-        "temperature_options": ", ".join(item.get("temperature_options", [])),
+        # Use exact enum values
+        "caffeine_level": item.get("caffeine_level", ""), 
+        "sweetness_level": item.get("sweetness_level", ""),  
         
-        # Service info
-        "preparation_time": item.get("preparation_time", ""),
-        "serving_size": item.get("serving_size", ""),
-        "customization_available": item.get("customization", {}).get("available", False),
-        
-        # Popularity and recommendations
-        "seasonal": item.get("seasonal", False),
-        
-        # Pairing and origin
-        "pairing_suggestions": ", ".join(item.get("pairing_suggestions", [])),
-        "origin": item.get("origin", ""),
+        # Use exact string values
+        "origin": item.get("origin", ""),  
         "brewing_method": item.get("brewing_method", ""),
-        "bean_origin": item.get("bean_origin", ""),
         "roast_level": item.get("roast_level", ""),
         
-        # Categorization helpers
-        "is_beverage": category_name.lower() not in ["nyamikan + maeman"],
-        "is_food": category_name.lower() == "nyamikan + maeman",
-        "is_coffee": any(coffee_word in item.get("name", "").lower() or 
-                        coffee_word in item.get("composition", "").lower() 
+        # Boolean values
+        "customization_available": item.get("customization", {}).get("available", False),
+        "seasonal": item.get("seasonal", False),
+        "is_beverage": category_name.lower() not in ["makanan", "food"],
+        "is_food": category_name.lower() in ["makanan", "food"],
+        "is_coffee": any(coffee_word in item.get("name", "").lower() 
                         for coffee_word in ["espresso", "kopi", "coffee", "americano", "latte", "cappuccino"]),
         "has_milk": any(milk_word in item.get("composition", "").lower() 
                        for milk_word in ["susu", "milk", "creamer", "foam"]),
@@ -343,22 +330,16 @@ def preprocess_query(question):
 
 def build_filter_criteria(question):
     question_lower = question.lower()
-    filters={}
-
-    # price filter
-    if any(word in question_lower for word in ["murah", "budget", "ekonomis", "cheap", "affordable", "ekonomis"]):
+    filters = {}
+    
+    # Price filters
+    if any(word in question_lower for word in ["murah", "budget", "ekonomis", "cheap", "affordable"]):
         filters["price_range"] = "budget"
     elif any(word in question_lower for word in ["mahal", "premium", "eksklusif", "expensive", "high-end"]):
         filters["price_range"] = "premium"
+    elif any(word in question_lower for word in ["sedang", "moderate", "menengah"]):
+        filters["price_range"] = "moderate"
 
-    # Dietary filters
-    if any(word in question_lower for word in ["vegetarian", "nabati"]):
-        filters["dietary_tags"] = {"$contains": "vegetarian"}
-    if any(word in question_lower for word in ["vegan"]):
-        filters["dietary_tags"] = {"$contains": "vegan"}
-    if any(word in question_lower for word in ["halal"]):
-        filters["dietary_tags"] = {"$contains": "halal"}
-    
     # Temperature filters
     if any(word in question_lower for word in ["dingin", "cold", "ice", "es", "iced"]):
         filters["has_ice_option"] = True
@@ -373,7 +354,79 @@ def build_filter_criteria(question):
     if any(word in question_lower for word in ["kopi", "coffee", "espresso", "americano", "cappuccino", "latte", "mocha"]):
         filters["is_coffee"] = True
 
-    return filters if filters else None
+    # Milk-based filters
+    if any(word in question_lower for word in ["susu", "milk", "creamy", "lembut", "foam"]):
+        filters["has_milk"] = True
+    elif any(word in question_lower for word in ["tanpa susu", "no milk", "dairy free", "hitam", "black"]):
+        filters["has_milk"] = False
+
+    # Customization filters
+    if any(word in question_lower for word in ["custom", "sesuai selera", "personalisasi", "modifikasi", "ubah", "adjust"]):
+        filters["customization_available"] = True
+
+    # Seasonal filters
+    if any(word in question_lower for word in ["musiman", "seasonal", "spesial", "terbatas", "limited"]):
+        filters["seasonal"] = True
+
+    # === ADVANCED FILTERS ===
+    
+    # Caffeine level filters
+    if any(word in question_lower for word in ["kuat", "strong", "energi", "melek", "semangat", "boost", "tinggi"]):
+        filters["caffeine_level"] = {"$in": ["High", "Very High"]}
+    elif any(word in question_lower for word in ["ringan", "light", "lemah", "sedikit", "rendah", "santai"]):
+        filters["caffeine_level"] = {"$in": ["Low", "None"]}
+    elif any(word in question_lower for word in ["sedang", "medium", "biasa", "normal"]):
+        filters["caffeine_level"] = "Medium"
+
+    # Sweetness level filters
+    if any(word in question_lower for word in ["manis", "sweet", "gula", "sugar", "legi"]):
+        filters["sweetness_level"] = {"$in": ["Medium", "High", "Very Sweet"]}
+    elif any(word in question_lower for word in ["pahit", "bitter", "tanpa gula", "no sugar", "unsweetened"]):
+        filters["sweetness_level"] = {"$in": ["None", "Low"]}
+
+    # Roast level filters
+    if any(word in question_lower for word in ["dark", "gelap", "pekat"]):
+        filters["roast_level"] = {"$in": ["Dark", "Very Dark"]}
+    elif any(word in question_lower for word in ["light", "ringan", "terang"]):
+        filters["roast_level"] = {"$in": ["Light", "Medium Light"]}
+
+    # === EXACT STRING MATCHES ===
+    
+    # Origin filters
+    if any(word in question_lower for word in ["lokal", "local", "indonesia", "nusantara"]):
+        filters["origin"] = "Indonesia" 
+    elif any(word in question_lower for word in ["colombia", "colombian"]):
+        filters["origin"] = "Colombia"
+    elif any(word in question_lower for word in ["brazil", "brazilian"]):
+        filters["origin"] = "Brazil"
+    elif any(word in question_lower for word in ["usa", "america", "american", "united states", "south america", "amerika", "us"]):
+        filters["origin"] = "America"
+    elif any(word in question_lower for word in ["europe", "italy", "eropa", "european"]):
+        filters["origin"] = "Italy"
+    elif any(word in question_lower for word in ["asia", "asian", "japan", "jepang", "china", "cina", "korea"]):
+        filters["origin"] = "Asia"
+
+    # Brewing method filters
+    if any(word in question_lower for word in ["espresso"]):
+        filters["brewing_method"] = "Espresso Machine"
+    elif any(word in question_lower for word in ["manual", "hand", "pour"]):
+        filters["brewing_method"] = "Manual Brewing"
+    elif any(word in question_lower for word in ["drip"]):
+        filters["brewing_method"] = "Drip Coffee"
+
+    # === SAFETY: Empty allergens ===
+    if any(word in question_lower for word in ["alergi", "allergy", "aman", "safe"]):
+        filters["allergens"] = ""  # Empty string for no allergens
+
+    if len(filters) == 0:
+        return None
+    elif len(filters) == 1:
+        return filters 
+    else:
+        filter_list = []
+        for key, value in filters.items():
+            filter_list.append({key: value})
+        return {"$and": filter_list}
 
 def query_menu(question, top_k=5):
     """Enhanced query function with preprocessing and filtering"""

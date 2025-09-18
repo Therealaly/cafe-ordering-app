@@ -148,7 +148,7 @@ const EditMenu = () => {
               setShowForm(false);
               setEditingMenu(null);
             }}
-            loading={loading} // You might want a specific formLoading state
+            loading={loading} 
           />
         </div>
       )}

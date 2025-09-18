@@ -27,6 +27,14 @@ export const useResetPasswordForm = () => {
     if (success) setSuccess('');
   };
 
+  function containsUppercase(str) {
+    return /[A-Z]/.test(str);
+  }
+
+  function containsInteger(str) {
+    return /[0-9]/.test(str);
+  }
+
   const validateForm = () => {
     if (!formData.newPassword || !formData.confirmPassword) {
       setError('Please fill in all fields');
@@ -43,6 +51,23 @@ export const useResetPasswordForm = () => {
       return false;
     }
 
+     const format = /[!@#$%^&*(),.?":{}|<>]/;
+
+    if (!formData.newPassword.match(format)) {
+      setError('Password must contains at least one special character');
+      return false;
+    }
+
+    if (!containsUppercase(formData.newPassword)) {
+      setError('Password must contains at least one uppercase letter');
+      return false;
+    }
+
+    if (!containsInteger(formData.newPassword)) {
+      setError('Password must contains at least one number');
+      return false;
+    }
+
     return true;
   };
 
@@ -56,9 +81,7 @@ export const useResetPasswordForm = () => {
     setSuccess('');
 
     try {
-      // Create a token from URL params for the API call
-      const resetToken = `${userId}/${urlToken}`;
-      await authService.resetPassword(resetToken, formData.newPassword);
+      await authService.resetPassword(userId, urlToken, formData.newPassword);
       
       setSuccess('Password successfully reset! You will be redirected to login.');
       setTimeout(() => {

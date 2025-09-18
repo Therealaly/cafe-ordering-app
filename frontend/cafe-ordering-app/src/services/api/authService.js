@@ -32,7 +32,7 @@ export const authService = {
   // Forgot password
   forgotPassword: async (email) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/forgot-password`, { email });
+      const response = await axios.post(`${API_BASE_URL}/auth/send-reset-password`, { email });
       return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Failed to send reset email');
@@ -40,13 +40,14 @@ export const authService = {
   },
 
   // Reset password
-  resetPassword: async (resetToken, newPassword) => {
-    try {
-      const response = await axios.post(`${API_BASE_URL}/auth/reset-password/${resetToken}`, {
+  resetPassword: async (userId, urlToken, newPassword) => {
+    try { 
+      const response = await axios.post(`${API_BASE_URL}/auth/reset-password/${userId}/${urlToken}`, {
         newPassword
       });
       return response.data;
     } catch (error) {
+      console.log(error);
       throw new Error(error.response?.data?.message || 'Failed to reset password');
     }
   },

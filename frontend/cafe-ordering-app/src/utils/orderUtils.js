@@ -11,6 +11,20 @@ export const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString("id-ID", options);
 };
 
+export const formatTime = (dateString) => {
+  const options = { 
+    hour: '2-digit',
+    minute: '2-digit'
+  };
+  return new Date(dateString).toLocaleTimeString("id-ID", options);
+}
+
+export const formatId = (id) => {
+  const num = id.slice(-3);
+  
+  return num.toUpperCase();
+}
+
 // Format currency for Indonesian Rupiah
 export const formatCurrency = (amount) => {
   return amount.toLocaleString("id-ID");

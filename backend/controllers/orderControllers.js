@@ -36,22 +36,49 @@ exports.getAllOrders = async (req, res) => {
 exports.updateOrderStatus = async (req, res) => {
   const { orderId } = req.params; // mengambil orderId dari parameter URL
   const { status } = req.body; // mengambil status dari body request
+  const { cashierId } = req.user.id; // Mengambil id kasir dari session storage
 
   try {
+    const order = await Order.findById(orderId);
+      if(!order) {
+        return res.status(404).json({ message: "Order tidak ditemukan" });
+      } 
+
+    let confirmDate = order.confirmedAt;
+    if(!confirmDate) {
+      confirmDate = new Date()
+    }
+
     const updatedOrder = await Order.findByIdAndUpdate( // mencari order berdasarkan orderId
       orderId,
-      { status }, 
-      { new: true } 
+      {status, confirmedBy: cashierId, confirmedAt: confirmDate},
+      {new: true}
     );
-    if (!updatedOrder) {
-      return res.status(404).json({ message: "Order tidak ditemukan" });
-    } 
 
     res.status(200).json({ message: "Status order berhasil diperbarui", order: updatedOrder });
   } catch (err) {
     res.status(500).json({ message: "Gagal memperbarui status order", error: err.message });
   } 
 };
+
+exports.deleteOrder = async (req, res) => {
+  const { orderId } = req.params;
+
+  try {
+    const order = await Order.findByIdAndDelete(orderId);
+    if(!order) {
+      return res.status(404).json({ message: "Order tidak ditemukan" });
+    }
+    if(order.status !== 'Menunggu Konfirmasi') {
+      return res.status(400).json({ message: "Hanya order dengan status 'Menunggu Konfirmasi' yang dapat dihapus" });
+    }
+    await Order.findByIdAndDelete(orderId);
+
+    res.status(200).json({ message: "Order berhasil dihapus" });
+  } catch (err) {
+    res.status(500).json({ message: "Gagal menghapus order", error: err.message });
+  }
+}
 
 exports.getUserOrders = async (req, res) => {
   try {

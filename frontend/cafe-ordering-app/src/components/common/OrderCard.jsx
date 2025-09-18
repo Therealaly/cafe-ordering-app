@@ -1,12 +1,12 @@
 import OrderStatusIcon from "../common/OrderStatusIcon";
-import { formatCurrency, getOrderItemsSummary, calculateOrderTotal } from "../../utils/orderUtils";
+import { formatTime, formatId, formatCurrency, getOrderItemsSummary, calculateOrderTotal } from "../../utils/orderUtils";
 
 const OrderCard = ({ order, showDate = false }) => {
   return (
     <div className="flex flex-row justify-between p-3 border border-gray-200 rounded-xl shadow-sm bg-white">
       <div className="flex flex-col w-3/5">
         <h2 className="text-black text-lg font-semibold">
-          Order #{order._id}
+          Order #{formatId(order._id)}
         </h2>
         <p className="text-sm text-black font-light pb-6">
           {getOrderItemsSummary(order)}
@@ -18,7 +18,7 @@ const OrderCard = ({ order, showDate = false }) => {
           Rp {formatCurrency(calculateOrderTotal(order))}
         </p>
         {showDate && (
-          <p className="text-sm">{order.createdAt}</p>
+          <p className="text-sm mt-2">{formatTime(order.createdAt)}</p>
         )}
       </div>
     </div>

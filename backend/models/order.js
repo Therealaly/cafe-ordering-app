@@ -25,6 +25,14 @@ const orderSchema = new moongose.Schema({
     type: Date,
     default: Date.now
   },
+  confirmedBy: {
+    type: moongose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  confirmedAt: {
+    type: Date,
+    default: null
+  }
 });
 
 module.exports = moongose.model('Order', orderSchema);

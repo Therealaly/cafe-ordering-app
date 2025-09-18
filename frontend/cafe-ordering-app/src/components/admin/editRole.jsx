@@ -162,7 +162,7 @@ const EditRole = () => {
 
       {loading && !showForm ? (
         <LoadingSkeleton rows={3} />
-      ) : !showForm && (
+      ) : (
         renderUserTable(sortedAndFilteredUsers, usersPagination)
       )}
 

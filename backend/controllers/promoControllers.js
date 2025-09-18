@@ -11,10 +11,11 @@ const getPromo = async (req, res) => {
 }
 
 const createPromo = async (req, res) => {
+  const { adminId } = req.user.id
   try {
     const { title, description, image } = req.body;
 
-    const newPromo = new Promo({ title, description, image });
+    const newPromo = new Promo({ title, description, image, createdBy: adminId });
     await newPromo.save();
 
     res.status(201).json({ message: 'Promosi berhasil ditambahkan', promo: newPromo });
@@ -25,13 +26,14 @@ const createPromo = async (req, res) => {
 
 // Edit promo
 const editPromo = async (req, res) => {
+  const { adminId } = req.user.id
   try {
     const { id } = req.params;
     const { title, description, image } = req.body;
 
     const updatedPromo = await Promo.findByIdAndUpdate(
       id,
-      { title, description, image },
+      { title, description, image, updatedBy: adminId },
       { new: true }
     );
 

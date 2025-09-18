@@ -43,7 +43,6 @@ const QrScan = () => {
       <p className="text-gray-600 mb-6 text-center text-sm">
         Scan QR Code untuk mendapatkan nomor meja. Pilih menu "Home" untuk melihat menu saja
       </p>
-
       <CustomQrScanner onScanSuccess={handleScanResult} />
     </div>
   );

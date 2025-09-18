@@ -40,12 +40,12 @@ const loginUser = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if ( !user ) {
-      return res.status(400).json({ message: "Email tidak ditemukan" });
+      return res.status(400).json({ message: "Password atau email salah" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if ( !isMatch ) {
-      return res.status(400).json({ message: "Password salah" });
+      return res.status(400).json({ message: "Password atau email salah" });
     }
 
     //JWT Token

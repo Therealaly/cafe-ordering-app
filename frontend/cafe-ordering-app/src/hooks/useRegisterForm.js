@@ -20,6 +20,14 @@ export const useRegisterForm = () => {
     if (error) setError('');
   };
 
+  function containsUppercase(str) {
+    return /[A-Z]/.test(str);
+  }
+
+  function containsInteger(str) {
+    return /[0-9]/.test(str);
+  }
+
   const validateForm = () => {
     if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
       setError('Please fill in all fields');
@@ -33,6 +41,23 @@ export const useRegisterForm = () => {
 
     if (formData.password.length < 6) {
       setError('Password must be at least 6 characters long');
+      return false;
+    }
+
+    const format = /[!@#$%^&*(),.?":{}|<>]/;
+
+    if (!formData.password.match(format)) {
+      setError('Password must contains at least one special character');
+      return false;
+    }
+
+    if (!containsUppercase(formData.password)) {
+      setError('Password must contains at least one uppercase letter');
+      return false;
+    }
+
+    if (!containsInteger(formData.password)) {
+      setError('Password must contains at least one number');
       return false;
     }
 

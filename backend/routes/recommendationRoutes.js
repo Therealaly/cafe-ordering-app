@@ -34,7 +34,7 @@ router.get('/:userId', verifyToken, async (req, res) => {
   try {
     const allMenu = await Menu.find(); // ambil semua menu dari db
     const userOrders = await Order.find({ userId }) // ambil semua order berdasarkan userId
-      .populate('items.menuId') // populate (expand data) items.menuId untuk mendapatkan data menu lengkap
+      .populate('items.menuId') // populate akan membuka id dari data tsb. tanpa populate, hanya akan mengembalikan id saja
 
     const orderedMenuId = userOrders.flatMap(order => order.items.map(item => item.menuId)); // mengakses semua menu yg dipesan user (membuka sampai menuId)
     const userTags = orderedMenuId.flatMap(menu => menu.tags.split(',').map(tag => tag.trim())).join(' '); 
@@ -65,12 +65,32 @@ router.get('/:userId', verifyToken, async (req, res) => {
 
     // Filter menu yang belum pernah dipesan user
     const orderedIds = orderedMenuId.map(menu => menu._id.toString());
-    const recommendedMenus = recommendations
-      .filter(r => !orderedIds.includes(r.menu._id.toString())) // menyaring men uyg belum pernah dipesan
-      .sort((a, b) => b.score - a.score) // mengurutkan berdasarkan skor tertinggi
-      .map(r => r.menu) // mengambi data menu dari hasil rekomendasi
-      .slice(0, 6); // ambil 6 menu teratas
-
+    
+    // menu belum pernah dipesan
+    const newItems = recommendations
+      .filter(r => !orderedIds.includes(r.menu._id.toString()))
+      .sort((a, b) => b.score - a.score);
+    
+    // menu pernah dipesan
+    const orderedItems = recommendations
+      .filter(r => orderedIds.includes(r.menu._id.toString()))
+      .sort(r => 0);
+    
+    // tambahkan 4 menu baru + 2 menu yang pernah dipesan
+    const recommendedMenus = [
+      ...newItems.slice(0, 4).map(r => r.menu),
+      ...orderedItems.slice(0, 2).map(r => r.menu)
+    ].slice(0, 6);
+    
+    // isi dengan menu yang pernah dipesan jika jumlah rekomendasi kurang dari 6
+    if (recommendedMenus.length < 6) {
+      const remaining = 6 - recommendedMenus.length;
+      const additionalItems = orderedItems
+        .slice(2, 2 + remaining)
+        .map(r => r.menu);
+      recommendedMenus.push(...additionalItems);
+    }
+    
     return res.json(recommendedMenus);
   
   } catch (error) {
