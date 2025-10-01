@@ -1,12 +1,22 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
+axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true';
+
+// Or create a custom axios instance:
+const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'ngrok-skip-browser-warning': 'true'
+  }
+});
 
 export const authService = {
   // Login user
   login: async (credentials) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/login`, credentials);
+      const response = await apiClient.post(`${API_BASE_URL}/auth/login`, credentials);
       const { token, user } = response.data;
       
       // Store in sessionStorage
@@ -22,7 +32,7 @@ export const authService = {
   // Register user
   register: async (userData) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/register`, userData);
+      const response = await apiClient.post(`${API_BASE_URL}/auth/register`, userData);
       return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Registration failed');
@@ -32,7 +42,7 @@ export const authService = {
   // Forgot password
   forgotPassword: async (email) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/send-reset-password`, { email });
+      const response = await apiClient.post(`${API_BASE_URL}/auth/send-reset-password`, { email });
       return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Failed to send reset email');
@@ -42,7 +52,7 @@ export const authService = {
   // Reset password
   resetPassword: async (userId, urlToken, newPassword) => {
     try { 
-      const response = await axios.post(`${API_BASE_URL}/auth/reset-password/${userId}/${urlToken}`, {
+      const response = await apiClient.post(`${API_BASE_URL}/auth/reset-password/${userId}/${urlToken}`, {
         newPassword
       });
       return response.data;

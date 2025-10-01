@@ -73,9 +73,12 @@ export const calculateOrderTotal = (order) => {
 // Get order items summary text
 export const getOrderItemsSummary = (order) => {
   if (!order?.items) return "";
-  return order.items.map(item => 
-    `${item.menuId?.name || 'Unknown'} (${item.quantity})`
-  ).join(", ");
+  return order.items.map(item => {
+    const optionsText = item.options
+      ? item.options.charAt(0).toUpperCase() + item.options.slice(1)
+      : '';
+    return `${optionsText} ${item.menuId?.name || 'Unknown'} (${item.quantity})`;
+  }).join(", ");
 };
 
 // Check if order is active

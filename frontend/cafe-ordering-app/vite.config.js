@@ -10,4 +10,11 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({ registerType: 'autoUpdate' })
   ],
+  server: {
+    allowedHosts: [
+      '.ngrok.io',                    // Allow all ngrok.io subdomains
+      '.ngrok-free.app',              // Allow all ngrok-free.app subdomains
+      'localhost'                     // Keep localhost access
+    ]
+  }
 })

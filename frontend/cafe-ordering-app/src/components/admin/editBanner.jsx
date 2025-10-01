@@ -80,8 +80,6 @@ const EditBanner = () => {
           Tambah Banner
         </button>
       </div>
-      
-
       {showForm && (
         <FormBanner
           initialData={editingBanner || {}}
@@ -93,12 +91,10 @@ const EditBanner = () => {
           loading={isSubmitting}
         />
       )}
-
       {loading && !showForm ? (
         <LoadingSkeleton rows={3} />
       ) : (
         <div className="overflow-x-auto">
-          
           <table className="min-w-full bg-white border border-gray-200 rounded-lg text-black">
             <thead>
               <tr>

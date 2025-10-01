@@ -220,13 +220,15 @@ const DashboardKasir = () => {
                     <h2 className="text-lg font-bold text-black">
                       Order #{formatId(order._id)} - Meja {order.tableNumber}
                     </h2>
-                    <p className="text-sm text-black mb-2">
+                    <div className="text-sm text-black mb-2">
                       {order.items.map((item) => (
-                        <span key={item.menuId._id} className="mr-2">
-                          {item.menuId.name} ({item.quantity})
-                        </span>
+                        <div key={item.menuId._id} className="mb-1">
+                          {`${item.quantity} `}
+                          {item.menuId.name}
+                          {item.options && item.options.trim() !== "" ? ` +${item.options.charAt(0).toUpperCase() + item.options.slice(1)}` : ""}
+                        </div>
                       ))}
-                    </p>
+                    </div>
                     <p className="text-sm font-semibold text-black">
                       Total: Rp {" "}
                       {order.items.reduce((total, item) => 

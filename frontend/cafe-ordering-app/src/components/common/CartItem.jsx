@@ -1,16 +1,24 @@
 import { Trash2 } from 'lucide-react';
 
 const CartItem = ({ item, onRemove, getItemTotal }) => {
+
+  const optionDetail = () => {
+    if(item.options != null && item.options !== "") {
+      return `${item.name} (${item.options})`;
+    }
+    return item.name;
+  }
+
   return (
     <div className="flex justify-between items-center border p-3 rounded-xl shadow-sm bg-white">
-      <div className="flex gap-3 items-center">
+      <div className="flex gap-3 items-center min-w-2/3">
         <img
           src={item.image}
           alt={item.name}
           className="w-16 h-16 object-cover rounded-lg"
         />
         <div>
-          <h2 className="text-black font-semibold">{item.name}</h2>
+          <h2 className="text-black font-semibold">{optionDetail()}</h2>
           <p className="text-sm text-gray-600">
             {item.quantity} x Rp {item.price.toLocaleString()}
           </p>

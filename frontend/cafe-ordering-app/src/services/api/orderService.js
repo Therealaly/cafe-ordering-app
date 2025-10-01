@@ -1,6 +1,16 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
+axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true';
+
+// Or create a custom axios instance:
+const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'ngrok-skip-browser-warning': 'true'
+  }
+});
 
 // Helper function to get auth headers
 const getAuthHeaders = () => ({
@@ -12,13 +22,13 @@ const getAuthHeaders = () => ({
 export const orderService = {
   // Get user orders
   getUserOrders: async () => {
-    const response = await axios.get(`${API_BASE_URL}/order/user`, getAuthHeaders());
+    const response = await apiClient.get(`${API_BASE_URL}/order/user`, getAuthHeaders());
     return response.data;
   },
 
   // Create a new order
   createOrder: async (orderData) => {
-    const response = await axios.post(
+    const response = await apiClient.post(
       `${API_BASE_URL}/order`, 
       orderData, 
       getAuthHeaders()
@@ -28,7 +38,7 @@ export const orderService = {
 
   // Update order status (if needed)
   updateOrder: async (id, orderData) => {
-    const response = await axios.put(
+    const response = await apiClient.put(
       `${API_BASE_URL}/order/${id}`, 
       orderData, 
       getAuthHeaders()
@@ -38,6 +48,6 @@ export const orderService = {
 
   // Cancel order (if needed)
   cancelOrder: async (id) => {
-    await axios.delete(`${API_BASE_URL}/order/${id}`, getAuthHeaders());
+    await apiClient.delete(`${API_BASE_URL}/order/${id}`, getAuthHeaders());
   },
 };

@@ -12,6 +12,8 @@ const Home = () => {
   const handleAddToCart = (menuItemWithQty) => {
     addItem(menuItemWithQty);
     setSelectedMenu(null);
+
+    window.dispatchEvent(new Event('cartUpdated'));
   };
 
   return (

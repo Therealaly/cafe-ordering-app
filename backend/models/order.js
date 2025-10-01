@@ -1,19 +1,19 @@
-const moongose = require('mongoose');
-const { create } = require('./user');
+const mongoose = require('mongoose');
 
-const orderSchema = new moongose.Schema({
+const orderSchema = new mongoose.Schema({
   userId: {
-    type: moongose.Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
   items: [{
     menuId: {
-      type: moongose.Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Menu',
       required: true
     },
-    quantity: { type: Number, required: true }
+    quantity: { type: Number, required: true },
+    options: {type: String}
   }],
   tableNumber: { type: String, required: true },
   status: {
@@ -26,7 +26,7 @@ const orderSchema = new moongose.Schema({
     default: Date.now
   },
   confirmedBy: {
-    type: moongose.Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
   confirmedAt: {
@@ -35,4 +35,4 @@ const orderSchema = new moongose.Schema({
   }
 });
 
-module.exports = moongose.model('Order', orderSchema);
+module.exports = mongoose.model('Order', orderSchema);

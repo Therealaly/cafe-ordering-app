@@ -314,6 +314,10 @@ def preprocess_query(question):
         "siang": ["lunch", "afternoon", "tengah-hari"],
         "sore": ["afternoon", "evening", "petang"],
         "malam": ["night", "evening", "dinner"],
+
+        "aren": ["palm sugar", "gula aren", "kopi susu aren"],
+        "karamel": ["caramel", "gula aren", "kopi susu karamel"],
+        "legi": ["sweet", "manis", "gula", "kopi susu legi"],
     }
 
     enhanced_query = question.lower()
@@ -340,11 +344,11 @@ def build_filter_criteria(question):
     elif any(word in question_lower for word in ["sedang", "moderate", "menengah"]):
         filters["price_range"] = "moderate"
 
-    # Temperature filters
-    if any(word in question_lower for word in ["dingin", "cold", "ice", "es", "iced"]):
-        filters["has_ice_option"] = True
-    if any(word in question_lower for word in ["panas", "hot", "hangat", "warm"]):
-        filters["has_hot_option"] = True
+    # # Temperature filters
+    # if any(word in question_lower for word in ["dingin", "cold", "ice", "es", "iced"]):
+    #     filters["has_ice_option"] = True
+    # if any(word in question_lower for word in ["panas", "hot", "hangat", "warm"]):
+    #     filters["has_hot_option"] = True
     
     # Category filters
     if any(word in question_lower for word in ["makanan", "food", "makan", "snack", "cemilan"]):
@@ -399,7 +403,7 @@ def build_filter_criteria(question):
         filters["origin"] = "Colombia"
     elif any(word in question_lower for word in ["brazil", "brazilian"]):
         filters["origin"] = "Brazil"
-    elif any(word in question_lower for word in ["usa", "america", "american", "united states", "south america", "amerika", "us"]):
+    elif any(word in question_lower for word in ["usa", "american", "united states", "south america", "amerika"]) and "americano" not in question_lower:
         filters["origin"] = "America"
     elif any(word in question_lower for word in ["europe", "italy", "eropa", "european"]):
         filters["origin"] = "Italy"
@@ -453,6 +457,12 @@ def query_menu(question, top_k=5):
                 n_results=top_k,
                 include=["documents", "metadatas"]
             )
+
+        print(f"Processed question: {processed_question}")
+        print(f"Filter criteria: {filter_criteria}")
+        print(f"Results found: {len(results['documents'][0])}")
+        print(f"result: {results['documents'][0]}")
+
     except Exception as e:
         print(f"Error querying with filters: {e}")
         # Fallback to basic query

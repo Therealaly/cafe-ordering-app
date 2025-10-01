@@ -38,7 +38,6 @@ const Cart = () => {
   return (
     <div className="pt-28 px-5 pb-28">
       <h1 className="text-2xl font-semibold text-black mb-4">Keranjang</h1>
-
       {cart.length === 0 ? (
         <EmptyState 
           message="Keranjang kamu masih kosong"
@@ -55,14 +54,12 @@ const Cart = () => {
               getItemTotal={getItemTotal}
             />
           ))}
-
           {/* Grand Total */}
           <div className="text-right mt-4">
             <p className="text-lg font-bold text-black">
               Total: Rp {getGrandTotal().toLocaleString()}
             </p>
           </div>
-
           {/* Payment Button */}
           <button
             onClick={handlePayment}

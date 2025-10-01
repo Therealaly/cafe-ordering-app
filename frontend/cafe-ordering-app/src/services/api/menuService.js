@@ -1,6 +1,16 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
+axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true';
+
+// Or create a custom axios instance:
+const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'ngrok-skip-browser-warning': 'true'
+  }
+});
 
 // Helper function to get auth headers
 const getAuthHeaders = () => ({
@@ -12,13 +22,13 @@ const getAuthHeaders = () => ({
 export const menuService = {
   // Get all menus
   getAll: async () => {
-    const response = await axios.get(`${API_BASE_URL}/menu`);
+    const response = await apiClient.get(`${API_BASE_URL}/menu`);
     return response.data;
   },
 
   // Create a new menu
   create: async (menuData) => {
-    const response = await axios.post(
+    const response = await apiClient.post(
       `${API_BASE_URL}/menu`, 
       menuData, 
       getAuthHeaders()
@@ -28,16 +38,33 @@ export const menuService = {
 
   // Update a menu
   update: async (id, menuData) => {
-    const response = await axios.put(
-      `${API_BASE_URL}/menu/${id}`, 
-      menuData, 
-      getAuthHeaders()
-    );
-    return response.data;
+    // ✅ ADD: Debug what's being sent to backend
+    console.log('📡 Sending to backend API:', {
+      id,
+      menuData,
+      url: `${API_BASE_URL}/menu/${id}`
+    });
+    
+    try {
+      const response = await apiClient.put(
+        `${API_BASE_URL}/menu/${id}`, 
+        menuData, 
+        getAuthHeaders()
+      );
+      console.log('✅ Backend response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('❌ Backend error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
+      throw error;
+    }
   },
 
   // Delete a menu
   delete: async (id) => {
-    await axios.delete(`${API_BASE_URL}/menu/${id}`, getAuthHeaders());
+    await apiClient.delete(`${API_BASE_URL}/menu/${id}`, getAuthHeaders());
   },
 };

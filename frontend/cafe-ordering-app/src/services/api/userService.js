@@ -1,6 +1,16 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
+axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true';
+
+// Or create a custom axios instance:
+const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'ngrok-skip-browser-warning': 'true'
+  }
+});
 
 // Helper function to get auth headers
 const getAuthHeaders = () => ({
@@ -12,13 +22,13 @@ const getAuthHeaders = () => ({
 export const userService = {
   // Get all users
   getAll: async () => {
-    const response = await axios.get(`${API_BASE_URL}/auth`, getAuthHeaders());
+    const response = await apiClient.get(`${API_BASE_URL}/auth`, getAuthHeaders());
     return response.data;
   },
 
   // Update a user
   update: async (id, userData) => {
-    const response = await axios.put(
+    const response = await apiClient.put(
       `${API_BASE_URL}/auth/${id}`, 
       userData, 
       getAuthHeaders()
@@ -28,6 +38,6 @@ export const userService = {
 
   // Delete a user
   delete: async (id) => {
-    await axios.delete(`${API_BASE_URL}/auth/${id}`, getAuthHeaders());
+    await apiClient.delete(`${API_BASE_URL}/auth/${id}`, getAuthHeaders());
   },
 };

@@ -162,10 +162,10 @@
         "serving_size": "220ml",
         "temperature_options": ["hot", "ice"],
         "customization": {
-          "options": ["extra chocolate (+3000)", "extra shot (+5000)"]
+          "options": ["extra shot (+5000)"]
         },
         "seasonal": false,
-        "ingredients": ["arabica coffee beans", "fresh milk", "dark chocolate", "ice"],
+        "ingredients": ["arabica coffee beans", "fresh milk", "chocolate powder", "ice"],
         "pairing_suggestions": ["pastries", "cookies", "chocolate desserts"],
         "origin": "America",
         "brewing_method": "espresso machine",
@@ -452,7 +452,7 @@
           "hot": null,
           "ice": 27000
         },
-        "description": "Minuman segar dan manis dengan aroma mint yang menyegarkan.",
+        "description": "Minuman cokelat segar dan manis dengan aroma mint yang menyegarkan.",
         "composition": "20gr cokelat bubuk + 20ml peppermint syrup + 1 scoop es krim vanilla",
         "tags": ["refreshing", "minty", "chocolate", "cool", "dessert", "indulgent"],
         "dietary_info": {
@@ -470,7 +470,7 @@
         "serving_size": "300ml",
         "temperature_options": ["ice"],
         "customization": {
-          "options": ["extra mint", "extra chocolate", "less ice", "extra ice", "sugar/sweetener"]
+          "options": ["extra mint", "less ice", "extra ice", "sugar/sweetener"]
         },
         "seasonal": false,
         "ingredients": ["chocolate powder", "peppermint syrup", "vanilla ice cream"],
@@ -488,7 +488,7 @@
         },
         "description": "Manis, lembut, dan kaya rasa.",
         "composition": "15gr cokelat bubuk premium + 150ml susu FM + 20ml simple syrup",
-        "tags": ["rich", "creamy", "sweet", "comforting", "indulgent", "smooth"],
+        "tags": ["chocolate","creamy", "sweet", "comforting", "indulgent", "rich"],
         "dietary_info": {
           "vegetarian": true,
           "vegan": false,

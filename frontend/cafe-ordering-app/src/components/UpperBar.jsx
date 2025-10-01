@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { ShoppingCart } from 'lucide-react';
+import { useCart } from '../hooks/useCart'; // Import the cart hook
 
 const UpperBar = () => {
   const storedUser = sessionStorage.getItem("user");
@@ -14,6 +15,9 @@ const UpperBar = () => {
     }
   }
 
+  // ✅ ADD: Get cart data
+    const { getTotalItems } = useCart();
+  const totalItems = getTotalItems();
 
   return (
     <div className="fixed top-0 left-0 right-0 flex w-full h-20 flex-row justify-between p-3 z-50 bg-green-950">
@@ -22,8 +26,15 @@ const UpperBar = () => {
       </div>
       <div className='flex flex-row w-3/5 gap-4 p-3 items-center justify-end'>
         <p>Halo, {userName}</p>
-        <NavLink to={"/keranjang"} className="max-h-full w-fit">
+        {/* ✅ UPDATED: Cart icon with badge */}
+        <NavLink to={"/keranjang"} className="max-h-full w-fit relative">
           <ShoppingCart size={24} className='text-inherit'/>
+          {/* ✅ ADD: Red notification badge */}
+          {totalItems > 0 && (
+            <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px]">
+              {totalItems > 99 ? '99+' : totalItems}
+            </div>
+          )}
         </NavLink>
       </div>
     </div>

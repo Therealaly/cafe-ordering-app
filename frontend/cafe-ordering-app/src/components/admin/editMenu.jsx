@@ -138,7 +138,6 @@ const EditMenu = () => {
           Tambah Menu
         </button>
       </div>
-
       {showForm && (
         <div className="mb-6">
           <FormMenu
@@ -152,7 +151,6 @@ const EditMenu = () => {
           />
         </div>
       )}
-
       {loading && !showForm ? (
         <div className="space-y-4">
           {[...Array(3)].map((_, i) => (
@@ -172,7 +170,6 @@ const EditMenu = () => {
           {renderMenuTable("Makanan", makananMenus, makananPagination)}
         </>
       )}
-
       <ConfirmDialog
         isOpen={!!confirmDelete}
         onConfirm={async () => {

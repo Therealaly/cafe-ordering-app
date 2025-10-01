@@ -13,6 +13,18 @@ export const useCart = () => {
   useEffect(() => {
     const savedCart = cartService.getCart();
     setCart(savedCart);
+
+    // Listen for cart updates
+    const handleCartUpdate = () => {
+      const updatedCart = cartService.getCart();
+      setCart(updatedCart);
+    };
+
+    window.addEventListener('cartUpdated', handleCartUpdate);
+    
+    return () => {
+      window.removeEventListener('cartUpdated', handleCartUpdate);
+    };
   }, []);
 
   // Check authentication and table number
@@ -38,6 +50,9 @@ export const useCart = () => {
       const updatedCart = cartService.addItem(item);
       setCart(updatedCart);
       setError(null);
+      
+      // Trigger event for instant updates
+      window.dispatchEvent(new Event('cartUpdated'));
     } catch (err) {
       setError('Failed to add item to cart');
       console.error('Error adding item to cart:', err);
@@ -50,6 +65,9 @@ export const useCart = () => {
       const updatedCart = cartService.removeItem(itemId);
       setCart(updatedCart);
       setError(null);
+      
+      // Trigger event for instant updates
+      window.dispatchEvent(new Event('cartUpdated'));
     } catch (err) {
       setError('Failed to remove item from cart');
       console.error('Error removing item from cart:', err);
@@ -62,6 +80,9 @@ export const useCart = () => {
       const updatedCart = cartService.updateQuantity(itemId, quantity);
       setCart(updatedCart);
       setError(null);
+      
+      // Trigger event for instant updates
+      window.dispatchEvent(new Event('cartUpdated'));
     } catch (err) {
       setError('Failed to update quantity');
       console.error('Error updating quantity:', err);
@@ -74,6 +95,9 @@ export const useCart = () => {
       const emptyCart = cartService.clearCart();
       setCart(emptyCart);
       setError(null);
+      
+      // Trigger event for instant updates
+      window.dispatchEvent(new Event('cartUpdated'));
     } catch (err) {
       setError('Failed to clear cart');
       console.error('Error clearing cart:', err);
@@ -83,6 +107,11 @@ export const useCart = () => {
   // Calculate totals
   const getItemTotal = (item) => cartService.calculateItemTotal(item);
   const getGrandTotal = () => cartService.calculateGrandTotal(cart);
+
+  // Helper function for UpperBar badge
+  const getTotalItems = () => {
+    return cart.reduce((total, item) => total + (item.quantity || 0), 0);
+  };
 
   // Create order
   const createOrder = async () => {
@@ -106,6 +135,7 @@ export const useCart = () => {
         items: cart.map(item => ({
           menuId: item._id,
           quantity: item.quantity,
+          options: item.options
         })),
         tableNumber: tableNum,
         status: 'Menunggu Konfirmasi'
@@ -133,6 +163,7 @@ export const useCart = () => {
     getItemTotal,
     getGrandTotal,
     createOrder,
-    checkRequirements
+    checkRequirements,
+    getTotalItems
   };
 };

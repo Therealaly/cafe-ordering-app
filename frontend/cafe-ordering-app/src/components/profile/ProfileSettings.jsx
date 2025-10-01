@@ -9,17 +9,17 @@ const ProfileSettings = () => {
     {
       label: "Ganti Password",
       icon: <KeyRound className="text-gray-700" />,
-      to: "/ganti-password",
+      to: "/forgot-password",
     },
     {
       label: "Ubah Nama Akun",
       icon: <UserRoundPen className="text-gray-700" />,
-      to: "/ubah-nama",
+      to: "/#",
     },
     {
       label: "Pelaporan / Kontak",
       icon: <MessageCircleQuestion className="text-gray-700" />,
-      to: "/kontak",
+      to: "https://wa.me/+6281215248027",
     },
     {
       label: "Log Out",
@@ -28,7 +28,7 @@ const ProfileSettings = () => {
   ];
 
   const handleLogout = () => {
-    logout(); // Use the logout function from useAuth hook
+    logout();
   }
 
   if (!isUserValid) {

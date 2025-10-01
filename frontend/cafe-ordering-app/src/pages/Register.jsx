@@ -50,16 +50,13 @@ const Register = () => {
         <h1 className="px-4 text-lg font-semibold text-gray-800 mt-2">
           Create Your Account
         </h1>
-        
         {error && <AlertMessage message={error} type="error" />}
-        
         <form onSubmit={handleRegister}>
           <FormInput
             placeholder="Name"
             value={formData.name}
             onChange={(value) => handleInputChange('name', value)}
           />
-          
           <FormInput
             type="email"
             placeholder="Email"
@@ -85,7 +82,6 @@ const Register = () => {
               )}
             </button>
           </div>
-
           <div className="relative">
             <FormInput
               type={showPasswordB ? "text" : "password"}
@@ -105,14 +101,12 @@ const Register = () => {
               )}
             </button>
           </div>
-          
           <FormCheckbox
             checked={formData.agree}
             onChange={(checked) => handleInputChange('agree', checked)}
           >
             I agree to the <span className="underline cursor-pointer">Privacy Notice</span>
           </FormCheckbox>
-          
           <div className="flex px-4 py-3">
             <button
               type="submit"

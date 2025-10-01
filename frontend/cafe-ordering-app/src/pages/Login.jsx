@@ -47,7 +47,7 @@ const Login = () => {
         {error && <AlertMessage message={error} type="error" />}
         <form onSubmit={handleLogin}>
           <FormInput
-            placeholder="Email or username"
+            placeholder="Email"
             value={formData.email}
             onChange={(value) => handleInputChange('email', value)}
           />

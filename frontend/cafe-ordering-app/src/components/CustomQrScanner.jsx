@@ -13,13 +13,14 @@ const CustomQrScanner = ({ onScanSuccess }) => {
     try {
       const devices = await Html5Qrcode.getCameras();
       if (devices && devices.length) {
-        const cameraId = devices[0].id;
+        //const cameraId = devices[0].id;
         await scanner.start(
-          cameraId,
+          { 
+            facingMode: { exact: "environment"} 
+          },
           {
             fps: 10,
             qrbox: 300
-            
           },
           (decodedText) => {
             onScanSuccess(decodedText);
@@ -38,20 +39,6 @@ const CustomQrScanner = ({ onScanSuccess }) => {
       await scannerRef.current.stop();
       scannerRef.current.clear();
       setScanning(false);
-    }
-  };
-
-  const handleUpload = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const scanner = new Html5Qrcode("qr-reader");
-    try {
-      const result = await scanner.scanFile(file, true);
-      onScanSuccess(result);
-    } catch (err) {
-      console.error("Failed to scan file", err);
-      alert("Gagal membaca file QR");
     }
   };
 
@@ -80,10 +67,6 @@ const CustomQrScanner = ({ onScanSuccess }) => {
             Stop Kamera
           </button>
         )}
-        <label className="bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold text-center cursor-pointer">
-          Upload File QR
-          <input type="file" accept="image/*" onChange={handleUpload} hidden />
-        </label>
         <label className="bg-yellow-600 text-white py-2 px-4 rounded-lg font-semibold text-center cursor-pointer">
           <input
             type="button"

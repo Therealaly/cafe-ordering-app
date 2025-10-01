@@ -71,17 +71,21 @@ router.get('/:userId', verifyToken, async (req, res) => {
       .filter(r => !orderedIds.includes(r.menu._id.toString()))
       .sort((a, b) => b.score - a.score);
     
+    console.log('Recommended items:', newItems.map(i => ({name: i.menu.name, score: i.score})));
+    
     // menu pernah dipesan
     const orderedItems = recommendations
       .filter(r => orderedIds.includes(r.menu._id.toString()))
       .sort(r => 0);
-    
+
+    console.log('Ordered items:', orderedItems.map(i => ({name: i.menu.name})));
     // tambahkan 4 menu baru + 2 menu yang pernah dipesan
     const recommendedMenus = [
       ...newItems.slice(0, 4).map(r => r.menu),
       ...orderedItems.slice(0, 2).map(r => r.menu)
     ].slice(0, 6);
     
+    console.log('Final recommended menus:', recommendedMenus.map(i => i.name));
     // isi dengan menu yang pernah dipesan jika jumlah rekomendasi kurang dari 6
     if (recommendedMenus.length < 6) {
       const remaining = 6 - recommendedMenus.length;

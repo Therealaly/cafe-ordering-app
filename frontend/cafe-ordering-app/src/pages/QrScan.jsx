@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { isLoggedIn } from "../utils/auth";
 import axios from "axios";
 
+const api = import.meta.env.VITE_API_URL;
+
 const QrScan = () => {
   const navigate = useNavigate();
 
@@ -17,7 +19,7 @@ const QrScan = () => {
     try {
       const {tableNumber, token} = JSON.parse(decodedText);
 
-      const res = await axios.post("http://localhost:5000/api/qrcode/validate", 
+      const res = await axios.post(`${api}/qrcode/validate`, 
         { tableNumber, token },
         { headers: {
             Authorization: `Bearer ${sessionStorage.getItem("token")}`,

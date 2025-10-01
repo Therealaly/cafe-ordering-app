@@ -3,6 +3,7 @@ import { useState } from "react";
 // mengakses props (fungsi) dari home yaitu menu, onclose, dan onAddToCart
 const MenuPopup = ({ menu, onClose, onAddToCart }) => {
   const [quantity, setQuantity] = useState(1);
+  const [selectedOptions, setSelectedOptions ] = useState("");
 
   // fungsi ini memanggil onAddToCart dari home
   const handleAdd = () => {
@@ -11,10 +12,12 @@ const MenuPopup = ({ menu, onClose, onAddToCart }) => {
     const itemToAdd = {
       ...menu,
       quantity,
+      options: selectedOptions,
     };
 
     onAddToCart(itemToAdd)
   };
+
 
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-49">
@@ -34,6 +37,37 @@ const MenuPopup = ({ menu, onClose, onAddToCart }) => {
             className="px-3 py-1 bg-gray-200 rounded text-black"
             onClick={() => setQuantity(q => q + 1)}
           >+</button>
+        </div>
+        <div className="flex items-center justify-between mb-4">
+          {Array.isArray(menu.options) && menu.options.includes("ice") && menu.options.includes("hot") ? (
+            <>
+              <span className="text-md text-black">Pilih Opsi</span>
+              <div className="flex flex-wrap gap-5 mt-2">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    value="ice"
+                    checked={selectedOptions === "ice"}
+                    onChange={e => {
+                      setSelectedOptions(e.target.value);
+                    }}
+                  />
+                  <span className="text-md text-black">Ice</span>
+                </label>
+                <label className="flex items-center gap-2">
+                 <input
+                    type="radio"
+                    value="hot"
+                    checked={selectedOptions === "hot"}
+                    onChange={e => {
+                      setSelectedOptions(e.target.value);
+                    }}
+                  />
+                  <span className="text-md text-black">Hot</span>
+                </label>
+              </div>
+            </>
+          ) : null}
         </div>
 
         <button

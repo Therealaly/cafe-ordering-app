@@ -1,6 +1,16 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
+axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true';
+
+// Or create a custom axios instance:
+const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'ngrok-skip-browser-warning': 'true'
+  }
+});
 
 export const cartService = {
   // Get cart from sessionStorage
@@ -68,7 +78,7 @@ export const cartService = {
   // Create order
   createOrder: async (orderData, token) => {
     try {
-      const response = await axios.post(
+      const response = await apiClient.post(
         `${API_BASE_URL}/order/`,
         orderData,
         { headers: { Authorization: `Bearer ${token}` } }

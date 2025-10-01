@@ -1,6 +1,16 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
+axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true';
+
+// Or create a custom axios instance:
+const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'ngrok-skip-browser-warning': 'true'
+  }
+});
 
 // Helper function to get auth headers
 const getAuthHeaders = () => ({
@@ -12,13 +22,13 @@ const getAuthHeaders = () => ({
 export const bannerService = {
   // Get all banners
   getAll: async () => {
-    const response = await axios.get(`${API_BASE_URL}/promo`);
+    const response = await apiClient.get(`${API_BASE_URL}/promo`);
     return response.data;
   },
 
   // Create a new banner
   create: async (bannerData) => {
-    const response = await axios.post(
+    const response = await apiClient.post(
       `${API_BASE_URL}/promo`, 
       bannerData, 
       getAuthHeaders()
@@ -28,7 +38,7 @@ export const bannerService = {
 
   // Update a banner
   update: async (id, bannerData) => {
-    const response = await axios.put(
+    const response = await apiClient.put(
       `${API_BASE_URL}/promo/${id}`, 
       bannerData, 
       getAuthHeaders()
@@ -38,12 +48,12 @@ export const bannerService = {
 
   // Delete a banner
   delete: async (id) => {
-    await axios.delete(`${API_BASE_URL}/promo/${id}`, getAuthHeaders());
+    await apiClient.delete(`${API_BASE_URL}/promo/${id}`, getAuthHeaders());
   },
 
   // Toggle banner status
   toggleStatus: async (id, isActive) => {
-    const response = await axios.patch(
+    const response = await apiClient.patch(
       `${API_BASE_URL}/promo/${id}`, 
       { isActive: !isActive }, 
       getAuthHeaders()

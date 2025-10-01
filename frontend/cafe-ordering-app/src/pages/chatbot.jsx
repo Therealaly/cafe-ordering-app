@@ -3,20 +3,20 @@ import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 
+const api = import.meta.env.VITE_API_URL;
+
 const ChatBot = () => {
   const [question, setQuestion] = useState('');
   const [messages, setmessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const chatContainerRef = useRef(null);
 
-  // Scroll to the bottom of the chat container when messages updates
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   }, [messages]);
 
-  //load chat history from sessionstorage when component mounts
   useEffect(() => {
     const savedMessages = JSON.parse(sessionStorage.getItem('warnaBee_Chat'))
     if (savedMessages) {
@@ -24,7 +24,6 @@ const ChatBot = () => {
     }
   }, []);
 
-  // save chat history to sessionStorage whenever messages changes
   useEffect(() => {
     if (messages.length > 0) {
       sessionStorage.setItem('warnaBee_Chat', JSON.stringify(messages));
@@ -43,7 +42,7 @@ const ChatBot = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post('http://localhost:5000/api/chatbot/chat', {question})
+      const res = await axios.post(`${api}/chatbot/chat`, {question})
 
       const botmessages = {
         text: res.data.answer,

@@ -12,9 +12,9 @@ const getMenus = async (req, res) => {
 
 const createMenu = async (req, res) => {
   try {
-    const { name, description, price, image, category, tags } = req.body;
+    const { name, description, price, image, category, options, tags } = req.body;
 
-    const newMenu = new Menu({ name, description, price, image, category, tags });
+    const newMenu = new Menu({ name, description, price, image, category, options, tags });
     await newMenu.save();
 
     res.status(201).json({ message: 'Menu berhasil ditambahkan', menu: newMenu });
@@ -26,11 +26,11 @@ const createMenu = async (req, res) => {
 const editMenu = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, price, image, category, tags } = req.body;
+    const { name, description, price, image, category, options, tags } = req.body;
 
     const updatedMenu = await Menu.findByIdAndUpdate(
       id,
-      { name, description, price, image, category, tags },
+      { name, description, price, image, category, options, tags },
       { new: true }
     );
 

@@ -6,8 +6,20 @@ const FormMenu = ({ initialData = {}, onSubmit, onCancel, loading }) => {
   const [price, setPrice] = useState(initialData.price || "");
   const [image, setImage] = useState(initialData.image || "");
   const [category, setCategory] = useState(initialData.category || "");
+  const [options, setOptions] = useState(
+    initialData.options && Array.isArray(initialData.options) 
+      ? initialData.options 
+      : initialData.options 
+        ? [initialData.options] 
+        : ["ice"]  // Default fallback
+  );
   const [tags, setTags] = useState(initialData.tags ? (Array.isArray(initialData.tags) ? initialData.tags.join(", ") : initialData.tags) : "");
 
+  const availableOptions = [
+    { value: "ice", label: "Ice/Dingin" },
+    { value: "hot", label: "Hot/Panas" },
+    { value: "food", label: "Food/Makanan" }
+  ];
 
   useEffect(() => {
     setName(initialData.name || "");
@@ -15,6 +27,13 @@ const FormMenu = ({ initialData = {}, onSubmit, onCancel, loading }) => {
     setPrice(initialData.price || "");
     setImage(initialData.image || "");
     setCategory(initialData.category || "Minuman");
+    setOptions(
+      initialData.options && Array.isArray(initialData.options)
+        ? initialData.options
+        : initialData.options
+          ? [initialData.options]
+          : ["ice"]
+    );
     setTags(initialData.tags ? (Array.isArray(initialData.tags) ? initialData.tags.join(", ") : initialData.tags) : "");
   }, [initialData]);
 
@@ -23,9 +42,10 @@ const FormMenu = ({ initialData = {}, onSubmit, onCancel, loading }) => {
     if (!name || !description || !price || !image || !category) return;
     // Convert tags string back to array if your backend expects an array
     const tagsArray = tags.split(",").map(tag => tag.trim()).filter(tag => tag);
-    onSubmit({ name, description, price: Number(price), image, category, tags: tagsArray });
+    onSubmit({ name, description, price: Number(price), image, category, options, tags: tagsArray.join(", ") }); // Join back to string if backend expects string
   };
 
+  
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md w-6/12 mb-4">
       <h2 className="text-lg font-bold mb-4 text-black">
@@ -85,6 +105,29 @@ const FormMenu = ({ initialData = {}, onSubmit, onCancel, loading }) => {
           <option value="Makanan">Makanan</option>
           {/* Add other categories as needed */}
         </select>
+      </div>
+      <div className="mb-3">
+        <label className="block text-sm font-medium text-gray-700 mb-2">Opsi Suhu/Makanan</label>
+        <div className="space-y-2 p-3 border border-gray-200 rounded-lg">
+          {availableOptions.map((option) => (
+            <label key={option.value} className="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 p-2 rounded">
+              <input
+                type="checkbox"
+                className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                checked={options.includes(option.value)}
+                onChange={() => {
+                  const value = option.value;
+                  setOptions(prev => 
+                    prev.includes(value) 
+                      ? prev.filter(opt => opt !== value)  // Remove if exists
+                      : [...prev, value]                   // Add if doesn't exist
+                  );
+                }}
+              />
+              <span className="text-sm text-gray-700 font-medium">{option.label}</span>
+            </label>
+          ))}
+        </div>
       </div>
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 mb-1">Tags (pisahkan dengan koma)</label>

@@ -13,7 +13,6 @@ const ActiveOrders = () => {
         <h1 className="text-black text-xl font-semibold pb-1 pt-5">
           Pesanan Saya
         </h1>
-
         {loading ? (
           <LoadingSkeleton rows={3} />
         ) : activeOrders.length === 0 ? (

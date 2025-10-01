@@ -16,7 +16,6 @@ const RecommendedMenu = ({ onSelect }) => {
           Pilihan menu menarik untukmu
         </p>
       </div>
-
       {/* scrollable Menu */}
       <div className="overflow-x-auto whitespace-nowrap scroll-smooth px-5 pb-5 element">
         <div className="flex space-x-5 w-max">
